@@ -16,7 +16,9 @@ import {
   FileText,
   Grid,
   Layers,
+  Music,
   Palette,
+  PenTool,
   Settings,
   Sliders,
   Type,
@@ -286,12 +288,12 @@ export const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
               <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-2">
                 Ukuran Kertas Fisik
               </label>
-              <div className="grid grid-cols-2 gap-2">
-                {(['A4', 'A5', 'Letter', 'B5'] as PaperSize[]).map((size) => (
+              <div className="grid grid-cols-2 gap-1.5">
+                {(['A4', 'A5', 'Letter', 'B5', 'Folio'] as PaperSize[]).map((size) => (
                   <button
                     key={size}
                     onClick={() => handlePaperSizeChange(size)}
-                    className={`p-2.5 rounded-lg border text-left transition-all ${
+                    className={`p-2 rounded-lg border text-left transition-all ${
                       paperConfig.size === size
                         ? 'border-indigo-600 bg-indigo-50 font-bold text-indigo-700'
                         : 'border-slate-200 hover:bg-slate-50'
@@ -305,7 +307,9 @@ export const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
                         ? '148 x 210 mm'
                         : size === 'Letter'
                         ? '8.5 x 11 in'
-                        : '176 x 250 mm'}
+                        : size === 'B5'
+                        ? '176 x 250 mm'
+                        : '215 x 330 mm (F4)'}
                     </div>
                   </button>
                 ))}
@@ -315,38 +319,68 @@ export const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
             {/* Paper Type */}
             <div className="border-t border-slate-200 pt-4">
               <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-2">
-                Jenis Buku & Kertas
+                Pilihan Jenis Kertas (Pelajar & Akademisi)
               </label>
               <div className="space-y-2">
                 {[
                   {
                     id: 'ruled' as PaperType,
-                    name: 'Buku Bergaris Sekolah (SIDU)',
-                    desc: 'Garis biru beraturan dengan margin vertikal merah.',
+                    name: 'Buku Tulis SIDU (Sekolah)',
+                    desc: 'Garis biru rapi dengan garis margin vertikal merah.',
                     icon: FileText,
                   },
                   {
-                    id: 'grid' as PaperType,
-                    name: 'Buku Kotak Matematika',
-                    desc: 'Grid kotak presisi untuk rumus, grafik, dan tabel.',
-                    icon: Grid,
+                    id: 'folio' as PaperType,
+                    name: 'Kertas Double Folio Bergaris',
+                    desc: 'Standar tugas sekolah & kuliah (margin kiri ganda & margin kanan).',
+                    icon: FileText,
                   },
                   {
                     id: 'looseleaf' as PaperType,
-                    name: 'Kertas Loose Leaf Binder',
-                    desc: 'Kertas bergaris lengkap dengan 3 lubang binder.',
+                    name: 'Kertas Loose Leaf Binder Kampus',
+                    desc: 'Kertas binder bergaris lengkap dengan ring binder.',
                     icon: Layers,
                   },
                   {
+                    id: 'grid' as PaperType,
+                    name: 'Buku Kotak Matematika (5mm)',
+                    desc: 'Grid kotak presisi untuk perhitungan sains dan rumus.',
+                    icon: Grid,
+                  },
+                  {
+                    id: 'grid-large' as PaperType,
+                    name: 'Buku Kotak Besar (10mm)',
+                    desc: 'Grid kotak besar untuk anak SD, angka, dan aksara/hanzi.',
+                    icon: Grid,
+                  },
+                  {
+                    id: 'lined-3' as PaperType,
+                    name: 'Buku Garis 3 Tulis Halus',
+                    desc: 'Format belajar menulis rapi dan huruf tegak bersambung.',
+                    icon: PenTool,
+                  },
+                  {
                     id: 'exam' as PaperType,
-                    name: 'Lembar Ujian & Tugas Resmi',
-                    desc: 'Tabel identitas siswa resmi di bagian header atas.',
+                    name: 'Lembar Ujian Resmi (UTS/UAS)',
+                    desc: 'Lengkap dengan tabel formal identitas siswa dan kotak nilai.',
                     icon: FileCheck,
                   },
                   {
+                    id: 'millimeter' as PaperType,
+                    name: 'Kertas Milimeter Blok',
+                    desc: 'Grid mikro oranye presisi untuk grafik teknik & fisika.',
+                    icon: FileSpreadsheet,
+                  },
+                  {
+                    id: 'music' as PaperType,
+                    name: 'Kertas Not Balok Musik',
+                    desc: '5 garis paranada (stave) untuk notasi musik & seni.',
+                    icon: Music,
+                  },
+                  {
                     id: 'plain' as PaperType,
-                    name: 'Kertas Polos Krem Vintage',
-                    desc: 'Kertas hangat tanpa garis untuk gaya catatan bebas.',
+                    name: 'Kertas Polos Ivory HVS',
+                    desc: 'Kertas polos bersih hangat untuk catatan bebas & diagram.',
                     icon: FileSpreadsheet,
                   },
                 ].map((item) => (

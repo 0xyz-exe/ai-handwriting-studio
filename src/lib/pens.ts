@@ -35,11 +35,48 @@ export const DEFAULT_PENS: Record<PenType, PenStyle> = {
   },
   pencil: {
     id: 'pencil',
-    name: 'Pensil 2B (Sketsa & Catatan Ringan)',
-    color: '#4b5563', // Graphite gray
-    opacity: 0.82,
-    thickness: 0.92,
+    name: 'Pensil 2B (Ujian & Menulis)',
+    color: '#3f3f46', // Classic 2B graphite
+    opacity: 0.86,
+    thickness: 0.95,
+    roughness: 0.32,
+    isPencil: true,
+  },
+  'pencil-mechanical': {
+    id: 'pencil-mechanical',
+    name: 'Pensil Mekanik 0.5mm (Presisi & Rapi)',
+    color: '#334155', // Sharp thin graphite
+    opacity: 0.9,
+    thickness: 0.72,
+    roughness: 0.18,
+    isPencil: true,
+  },
+  'pencil-4b': {
+    id: 'pencil-4b',
+    name: 'Pensil 4B Gelap (Sketsa & Tebal)',
+    color: '#18181b', // Soft dark graphite
+    opacity: 0.92,
+    thickness: 1.25,
+    roughness: 0.45,
+    isPencil: true,
+  },
+  'pencil-colored-red': {
+    id: 'pencil-colored-red',
+    name: 'Pensil Warna Merah (Koreksi Lembut)',
+    color: '#e11d48',
+    opacity: 0.85,
+    thickness: 1.0,
     roughness: 0.35,
+    isPencil: true,
+  },
+  'pencil-colored-blue': {
+    id: 'pencil-colored-blue',
+    name: 'Pensil Warna Biru (Sketsa Diagram)',
+    color: '#2563eb',
+    opacity: 0.85,
+    thickness: 1.0,
+    roughness: 0.35,
+    isPencil: true,
   },
   highlighter: {
     id: 'highlighter',
@@ -52,12 +89,13 @@ export const DEFAULT_PENS: Record<PenType, PenStyle> = {
   },
 };
 
-export function getPenStyle(type: PenType, customColors?: { blue?: string; black?: string; red?: string }): PenStyle {
-  const base = { ...DEFAULT_PENS[type] };
+export function getPenStyle(type?: PenType, customColors?: { blue?: string; black?: string; red?: string }): PenStyle {
+  const resolvedType = (type && DEFAULT_PENS[type]) ? type : 'ballpoint-black';
+  const base = { ...DEFAULT_PENS[resolvedType] };
   if (customColors) {
-    if (type === 'ballpoint-blue' && customColors.blue) base.color = customColors.blue;
-    if (type === 'ballpoint-black' && customColors.black) base.color = customColors.black;
-    if (type === 'ballpoint-red' && customColors.red) base.color = customColors.red;
+    if (resolvedType === 'ballpoint-blue' && customColors.blue) base.color = customColors.blue;
+    if (resolvedType === 'ballpoint-black' && customColors.black) base.color = customColors.black;
+    if (resolvedType === 'ballpoint-red' && customColors.red) base.color = customColors.red;
   }
   return base;
 }

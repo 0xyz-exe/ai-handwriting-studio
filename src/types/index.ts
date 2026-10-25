@@ -1,9 +1,30 @@
-export type PaperType = 'ruled' | 'grid' | 'dot' | 'looseleaf' | 'exam' | 'plain';
-export type PaperSize = 'A4' | 'A5' | 'Letter' | 'B5';
+export type PaperType =
+  | 'ruled' // Buku Tulis SIDU biasa
+  | 'folio' // Kertas Double Folio Bergaris (Standar Tugas Sekolah & Kuliah)
+  | 'looseleaf' // Kertas Loose Leaf Binder Kampus (26/30 Ring)
+  | 'grid' // Buku Kotak Matematika (5mm)
+  | 'grid-large' // Buku Kotak Besar (10mm)
+  | 'lined-3' // Buku Garis 3 (Tulis Halus / Tegak Bersambung)
+  | 'exam' // Lembar Jawaban Ujian Resmi (UTS/UAS)
+  | 'millimeter' // Kertas Milimeter Blok (Grafik Teknik/Sains)
+  | 'music' // Kertas Not Balok Musik (5 Garis Paranada)
+  | 'plain'; // Kertas Polos Ivory HVS
+
+export type PaperSize = 'A4' | 'A5' | 'Letter' | 'B5' | 'Folio';
 export type ViewMode = 'single' | 'double' | 'grid';
 export type HandwritingPreset = 'neat' | 'natural' | 'expressive' | 'custom';
 
-export type PenType = 'ballpoint-blue' | 'ballpoint-black' | 'ballpoint-red' | 'ballpoint-green' | 'pencil' | 'highlighter';
+export type PenType =
+  | 'ballpoint-blue'
+  | 'ballpoint-black'
+  | 'ballpoint-red'
+  | 'ballpoint-green'
+  | 'pencil' // Pensil 2B Standar
+  | 'pencil-mechanical' // Pensil Mekanik 0.5mm
+  | 'pencil-4b' // Pensil 4B Gelap
+  | 'pencil-colored-red' // Pensil Warna Merah
+  | 'pencil-colored-blue' // Pensil Warna Biru
+  | 'highlighter';
 
 export interface PenStyle {
   id: PenType;
@@ -13,6 +34,7 @@ export interface PenStyle {
   thickness: number; // multiplier e.g. 1.0, 1.2
   roughness: number; // 0 for smooth gel, 0.4 for pencil
   isHighlighter?: boolean;
+  isPencil?: boolean;
 }
 
 export interface HandwritingFont {
@@ -33,8 +55,10 @@ export interface PaperConfig {
   lineSpacingPx: number; // Ruled line height
   gridSizePx: number; // For grid / dot
   lineColor: string;
+  subLineColor?: string;
   marginLineColor: string;
   hasLeftMargin: boolean;
+  hasRightMargin?: boolean;
   leftMarginPx: number;
   topMarginPx: number;
   rightMarginPx: number;

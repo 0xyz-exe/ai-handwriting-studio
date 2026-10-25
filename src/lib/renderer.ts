@@ -36,19 +36,21 @@ export function drawPaperBackground(
     }
   }
 
-  // 2. Ruled lines or Grid lines
+  // 2. Paper line drawings
   if (paperConfig.type === 'ruled' || paperConfig.type === 'looseleaf') {
     ctx.lineWidth = 1;
-    ctx.strokeStyle = paperConfig.lineColor;
+    ctx.strokeStyle = paperConfig.lineColor || '#93c5fd';
 
-    const startY = paperConfig.topMarginPx;
-    const endY = heightPx - paperConfig.bottomMarginPx;
-    const lineSpacing = paperConfig.lineSpacingPx;
+    const startY = paperConfig.topMarginPx || 96;
+    const endY = heightPx - (paperConfig.bottomMarginPx || 64);
+    const lineSpacing = paperConfig.lineSpacingPx || 32;
 
-    // Double top header line if ruled
+    // Double top header line
     ctx.beginPath();
-    ctx.moveTo(0, startY - 6);
-    ctx.lineTo(widthPx, startY - 6);
+    ctx.moveTo(0, startY - 8);
+    ctx.lineTo(widthPx, startY - 8);
+    ctx.moveTo(0, startY - 4);
+    ctx.lineTo(widthPx, startY - 4);
     ctx.stroke();
 
     for (let y = startY; y <= endY; y += lineSpacing) {
@@ -60,19 +62,90 @@ export function drawPaperBackground(
 
     // Left vertical margin line
     if (paperConfig.hasLeftMargin && paperConfig.marginLineColor !== 'transparent') {
-      ctx.strokeStyle = paperConfig.marginLineColor;
+      ctx.strokeStyle = paperConfig.marginLineColor || '#ef4444';
       ctx.lineWidth = 1.5;
       ctx.beginPath();
-      ctx.moveTo(paperConfig.leftMarginPx, 0);
-      ctx.lineTo(paperConfig.leftMarginPx, heightPx);
+      ctx.moveTo(paperConfig.leftMarginPx || 105, 0);
+      ctx.lineTo(paperConfig.leftMarginPx || 105, heightPx);
       ctx.stroke();
     }
-  } else if (paperConfig.type === 'grid') {
-    const grid = paperConfig.gridSizePx || 28;
-    ctx.lineWidth = 0.75;
-    ctx.strokeStyle = paperConfig.lineColor;
+  } else if (paperConfig.type === 'folio') {
+    // Double Folio Bergaris
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = paperConfig.lineColor || '#93c5fd';
 
-    // Vertical lines
+    const startY = paperConfig.topMarginPx || 80;
+    const endY = heightPx - (paperConfig.bottomMarginPx || 64);
+    const lineSpacing = paperConfig.lineSpacingPx || 30;
+
+    for (let y = startY; y <= endY; y += lineSpacing) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(widthPx, y);
+      ctx.stroke();
+    }
+
+    // Left double margin line (khas folio bergaris Indonesia)
+    const leftM = paperConfig.leftMarginPx || 90;
+    ctx.strokeStyle = paperConfig.marginLineColor || '#dc2626';
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(leftM - 5, 0);
+    ctx.lineTo(leftM - 5, heightPx);
+    ctx.moveTo(leftM, 0);
+    ctx.lineTo(leftM, heightPx);
+    ctx.stroke();
+
+    // Right margin line
+    if (paperConfig.hasRightMargin) {
+      const rightM = widthPx - (paperConfig.rightMarginPx || 60);
+      ctx.strokeStyle = '#60a5fa';
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.moveTo(rightM, 0);
+      ctx.lineTo(rightM, heightPx);
+      ctx.stroke();
+    }
+  } else if (paperConfig.type === 'lined-3') {
+    // Buku Garis 3 (Tulis Halus / Huruf Tegak Bersambung)
+    const startY = paperConfig.topMarginPx || 96;
+    const endY = heightPx - (paperConfig.bottomMarginPx || 64);
+    const lineSpacing = paperConfig.lineSpacingPx || 38;
+
+    for (let y = startY; y <= endY; y += lineSpacing) {
+      // Main top and bottom lines
+      ctx.lineWidth = 1.2;
+      ctx.strokeStyle = paperConfig.lineColor || '#3b82f6';
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(widthPx, y);
+      ctx.stroke();
+
+      // Middle dashed helper line
+      ctx.save();
+      ctx.lineWidth = 0.8;
+      ctx.setLineDash([4, 4]);
+      ctx.strokeStyle = paperConfig.subLineColor || '#93c5fd';
+      ctx.beginPath();
+      ctx.moveTo(0, y - lineSpacing * 0.5);
+      ctx.lineTo(widthPx, y - lineSpacing * 0.5);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    if (paperConfig.hasLeftMargin) {
+      ctx.strokeStyle = paperConfig.marginLineColor || '#ef4444';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(paperConfig.leftMarginPx || 96, 0);
+      ctx.lineTo(paperConfig.leftMarginPx || 96, heightPx);
+      ctx.stroke();
+    }
+  } else if (paperConfig.type === 'grid' || paperConfig.type === 'grid-large') {
+    const grid = paperConfig.gridSizePx || (paperConfig.type === 'grid-large' ? 42 : 26);
+    ctx.lineWidth = 0.75;
+    ctx.strokeStyle = paperConfig.lineColor || '#cbd5e1';
+
     for (let x = 0; x <= widthPx; x += grid) {
       ctx.beginPath();
       ctx.moveTo(x, 0);
@@ -80,7 +153,6 @@ export function drawPaperBackground(
       ctx.stroke();
     }
 
-    // Horizontal lines
     for (let y = 0; y <= heightPx; y += grid) {
       ctx.beginPath();
       ctx.moveTo(0, y);
@@ -88,23 +160,67 @@ export function drawPaperBackground(
       ctx.stroke();
     }
 
-    // Optional left margin
     if (paperConfig.hasLeftMargin) {
-      ctx.strokeStyle = paperConfig.marginLineColor;
+      ctx.strokeStyle = paperConfig.marginLineColor || '#ef4444';
       ctx.lineWidth = 1.5;
       ctx.beginPath();
-      ctx.moveTo(paperConfig.leftMarginPx, 0);
-      ctx.lineTo(paperConfig.leftMarginPx, heightPx);
+      ctx.moveTo(paperConfig.leftMarginPx || 84, 0);
+      ctx.lineTo(paperConfig.leftMarginPx || 84, heightPx);
       ctx.stroke();
     }
-  } else if (paperConfig.type === 'dot') {
-    const grid = paperConfig.gridSizePx || 30;
-    ctx.fillStyle = paperConfig.lineColor;
-    for (let x = grid; x < widthPx; x += grid) {
-      for (let y = grid; y < heightPx; y += grid) {
+  } else if (paperConfig.type === 'millimeter') {
+    // Kertas Milimeter Blok
+    const subGrid = paperConfig.gridSizePx || 10;
+    const majorGrid = subGrid * 5;
+
+    // Minor lines
+    ctx.lineWidth = 0.5;
+    ctx.strokeStyle = paperConfig.subLineColor || '#fdba74';
+    for (let x = 0; x <= widthPx; x += subGrid) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, heightPx);
+      ctx.stroke();
+    }
+    for (let y = 0; y <= heightPx; y += subGrid) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(widthPx, y);
+      ctx.stroke();
+    }
+
+    // Major lines
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = paperConfig.lineColor || '#f97316';
+    for (let x = 0; x <= widthPx; x += majorGrid) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, heightPx);
+      ctx.stroke();
+    }
+    for (let y = 0; y <= heightPx; y += majorGrid) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(widthPx, y);
+      ctx.stroke();
+    }
+  } else if (paperConfig.type === 'music') {
+    // 5-line Stave systems
+    const staveSpacing = 8;
+    const systemSpacing = paperConfig.lineSpacingPx || 48;
+    const startY = paperConfig.topMarginPx || 90;
+    const endY = heightPx - (paperConfig.bottomMarginPx || 70);
+
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = paperConfig.lineColor || '#1e293b';
+
+    for (let sysY = startY; sysY <= endY; sysY += systemSpacing) {
+      for (let s = 0; s < 5; s++) {
+        const lineY = sysY + s * staveSpacing;
         ctx.beginPath();
-        ctx.arc(x, y, 1, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.moveTo(40, lineY);
+        ctx.lineTo(widthPx - 40, lineY);
+        ctx.stroke();
       }
     }
   } else if (paperConfig.type === 'exam') {
@@ -220,9 +336,9 @@ export function renderHandwritingLine(
     ctx.globalAlpha = pen.opacity;
 
     // Pencil graphite stipple effect
-    if (pen.id === 'pencil') {
+    if (pen.isPencil) {
       ctx.shadowColor = pen.color;
-      ctx.shadowBlur = 0.5;
+      ctx.shadowBlur = 0.6;
     }
 
     const chars = Array.from(span.text);
@@ -244,12 +360,21 @@ export function renderHandwritingLine(
       ctx.translate(currentX, line.y + yJitter);
       ctx.rotate(angleJitter);
 
-      ctx.fillText(char, 0, 0);
-
-      // Natural stroke thickness simulation (slight multi-draw for ballpoint pressure variation)
-      if (handwritingConfig.strokeVariation > 0.1 && (charSeed > 0.6 || span.isBold)) {
-        ctx.globalAlpha = pen.opacity * 0.25;
-        ctx.fillText(char, 0.4, 0.2);
+      if (pen.isPencil) {
+        // Natural graphite texture simulation
+        ctx.globalAlpha = (pen.opacity || 0.85) * (0.85 + prng() * 0.2);
+        ctx.fillText(char, 0, 0);
+        if (charSeed > 0.5) {
+          ctx.globalAlpha = 0.18;
+          ctx.fillText(char, (prng() - 0.5) * 0.5, (prng() - 0.5) * 0.5);
+        }
+      } else {
+        ctx.fillText(char, 0, 0);
+        // Natural stroke thickness simulation (slight multi-draw for ballpoint pressure variation)
+        if (handwritingConfig.strokeVariation > 0.1 && (charSeed > 0.6 || span.isBold)) {
+          ctx.globalAlpha = pen.opacity * 0.25;
+          ctx.fillText(char, 0.4, 0.2);
+        }
       }
 
       ctx.restore();

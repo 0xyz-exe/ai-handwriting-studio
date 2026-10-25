@@ -51,7 +51,7 @@ export function parseLineToSpans(rawLine: string, options: ParseOptions): { isHe
 
   // Regex to match tags like [blue]...[/blue], [red]...[/red], [pencil]...[/pencil], [hl]...[/hl], $math$
   // Tokenizer for tags and regular text
-  const tagRegex = /(\[(?:blue|black|red|green|pencil|hl(?::[a-z]+)?)\][\s\S]*?\[\/(?:blue|black|red|green|pencil|hl)\]|\$\$[\s\S]*?\$\$|\$[^$\n]+\$)/g;
+  const tagRegex = /(\[(?:blue|black|red|green|pencil|pencil-mech|pencil-4b|pencil-red|pencil-blue|hl(?::[a-z]+)?)\][\s\S]*?\[\/(?:blue|black|red|green|pencil|pencil-mech|pencil-4b|pencil-red|pencil-blue|hl)\]|\$\$[\s\S]*?\$\$|\$[^$\n]+\$)/g;
 
   const parts = line.split(tagRegex);
   const spans: FormattedSpan[] = [];
@@ -82,7 +82,7 @@ export function parseLineToSpans(rawLine: string, options: ParseOptions): { isHe
     }
 
     // Check if it's a tagged pen block
-    const penMatch = part.match(/^\[(blue|black|red|green|pencil|hl(?::([a-z]+))?)\]([\s\S]*?)\[\/(?:blue|black|red|green|pencil|hl)\]$/);
+    const penMatch = part.match(/^\[(blue|black|red|green|pencil|pencil-mech|pencil-4b|pencil-red|pencil-blue|hl(?::([a-z]+))?)\]([\s\S]*?)\[\/(?:blue|black|red|green|pencil|pencil-mech|pencil-4b|pencil-red|pencil-blue|hl)\]$/);
     if (penMatch) {
       const tag = penMatch[1];
       const innerText = penMatch[3];
@@ -93,6 +93,10 @@ export function parseLineToSpans(rawLine: string, options: ParseOptions): { isHe
       else if (tag === 'red') pen = getPenStyle('ballpoint-red', options.customPenColors);
       else if (tag === 'green') pen = getPenStyle('ballpoint-green', options.customPenColors);
       else if (tag === 'pencil') pen = getPenStyle('pencil', options.customPenColors);
+      else if (tag === 'pencil-mech') pen = getPenStyle('pencil-mechanical', options.customPenColors);
+      else if (tag === 'pencil-4b') pen = getPenStyle('pencil-4b', options.customPenColors);
+      else if (tag === 'pencil-red') pen = getPenStyle('pencil-colored-red', options.customPenColors);
+      else if (tag === 'pencil-blue') pen = getPenStyle('pencil-colored-blue', options.customPenColors);
       else if (tag.startsWith('hl')) {
         pen = getPenStyle('highlighter', options.customPenColors);
         const colorName = penMatch[2];

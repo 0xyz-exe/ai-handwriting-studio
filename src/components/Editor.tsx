@@ -150,15 +150,79 @@ export const Editor: React.FC<EditorProps> = ({
             onSelectPen('pencil');
             wrapSelectionWithTag('[pencil]', '[/pencil]');
           }}
-          className={`flex items-center space-x-1 px-2.5 py-1 rounded-md transition-all font-medium ${
+          className={`flex items-center space-x-1 px-2 py-1 rounded-md transition-all font-medium ${
             activePen === 'pencil'
-              ? 'bg-slate-200 text-slate-800 ring-1 ring-slate-400 font-semibold'
+              ? 'bg-slate-200 text-slate-900 ring-1 ring-slate-400 font-semibold'
               : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
           }`}
-          title="Pensil 2B untuk Sketsa / Catatan Kecil"
+          title="Pensil 2B Standar (Ujian & Sketsa)"
         >
           <Pencil className="w-3 h-3 text-slate-600" />
-          <span>Pensil</span>
+          <span>Pensil 2B</span>
+        </button>
+
+        <button
+          onClick={() => {
+            onSelectPen('pencil-mechanical');
+            wrapSelectionWithTag('[pencil-mech]', '[/pencil-mech]');
+          }}
+          className={`flex items-center space-x-1 px-2 py-1 rounded-md transition-all font-medium ${
+            activePen === 'pencil-mechanical'
+              ? 'bg-slate-200 text-slate-900 ring-1 ring-slate-400 font-semibold'
+              : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
+          }`}
+          title="Pensil Mekanik 0.5mm (Garis Tipis Presisi)"
+        >
+          <Pencil className="w-3 h-3 text-slate-700" />
+          <span>Mekanik 0.5</span>
+        </button>
+
+        <button
+          onClick={() => {
+            onSelectPen('pencil-4b');
+            wrapSelectionWithTag('[pencil-4b]', '[/pencil-4b]');
+          }}
+          className={`flex items-center space-x-1 px-2 py-1 rounded-md transition-all font-medium ${
+            activePen === 'pencil-4b'
+              ? 'bg-slate-300 text-slate-950 ring-1 ring-slate-500 font-semibold'
+              : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
+          }`}
+          title="Pensil 4B Gelap (Goresan Tebal Bertekstur)"
+        >
+          <Pencil className="w-3 h-3 text-slate-900" />
+          <span>Pensil 4B</span>
+        </button>
+
+        <button
+          onClick={() => {
+            onSelectPen('pencil-colored-red');
+            wrapSelectionWithTag('[pencil-red]', '[/pencil-red]');
+          }}
+          className={`flex items-center space-x-1 px-2 py-1 rounded-md transition-all font-medium ${
+            activePen === 'pencil-colored-red'
+              ? 'bg-rose-100 text-rose-800 ring-1 ring-rose-400 font-semibold'
+              : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
+          }`}
+          title="Pensil Warna Merah"
+        >
+          <Pencil className="w-3 h-3 text-rose-600" />
+          <span>Pensil Merah</span>
+        </button>
+
+        <button
+          onClick={() => {
+            onSelectPen('pencil-colored-blue');
+            wrapSelectionWithTag('[pencil-blue]', '[/pencil-blue]');
+          }}
+          className={`flex items-center space-x-1 px-2 py-1 rounded-md transition-all font-medium ${
+            activePen === 'pencil-colored-blue'
+              ? 'bg-blue-100 text-blue-800 ring-1 ring-blue-400 font-semibold'
+              : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
+          }`}
+          title="Pensil Warna Biru"
+        >
+          <Pencil className="w-3 h-3 text-blue-600" />
+          <span>Pensil Biru</span>
         </button>
 
         <button

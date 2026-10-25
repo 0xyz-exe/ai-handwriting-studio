@@ -231,6 +231,7 @@ export default function Home() {
           <PaperCanvas
             pages={layout.pages}
             paperConfig={activeProject.paperConfig}
+            onUpdatePaperConfig={updatePaperConfig}
             handwritingConfig={activeProject.handwritingConfig}
             studentMeta={activeProject.studentMeta}
             onRegisterCanvases={setActiveCanvases}

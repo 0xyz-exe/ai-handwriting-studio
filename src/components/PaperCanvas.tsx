@@ -1,11 +1,65 @@
-import { HandwritingStyleConfig, PageLayout, PaperConfig, StudentProject, ViewMode } from '@/types';
+import { HandwritingStyleConfig, PageLayout, PaperConfig, PaperType, StudentProject, ViewMode } from '@/types';
+import { createPaperConfig } from '@/lib/paper-templates';
 import { renderPageToCanvas } from '@/lib/renderer';
-import { ChevronLeft, ChevronRight, Columns, Eye, Grid, Maximize2, ZoomIn, ZoomOut } from 'lucide-react';
+import {
+  ChevronLeft,
+  ChevronRight,
+  Columns,
+  Eye,
+  FileCheck,
+  FileSpreadsheet,
+  FileText,
+  Grid,
+  Layers,
+  Maximize2,
+  Music,
+  PenTool,
+  ZoomIn,
+  ZoomOut,
+} from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react';
+
+// Isolated subcomponent to guarantee render on mount, prop change, and font load
+const SingleCanvasView: React.FC<{
+  page: PageLayout;
+  paperConfig: PaperConfig;
+  handwritingConfig: HandwritingStyleConfig;
+  studentMeta?: StudentProject['studentMeta'];
+  onCanvasMounted?: (canvas: HTMLCanvasElement) => void;
+}> = ({ page, paperConfig, handwritingConfig, studentMeta, onCanvasMounted }) => {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const paint = () => {
+      renderPageToCanvas(canvas, page, paperConfig, handwritingConfig, studentMeta);
+      onCanvasMounted?.(canvas);
+    };
+
+    // First paint
+    paint();
+
+    // Re-paint when Google Fonts load to ensure cursive handwriting is crisp
+    if (typeof document !== 'undefined' && document.fonts) {
+      document.fonts.ready.then(() => {
+        paint();
+      });
+    }
+  }, [page, paperConfig, handwritingConfig, studentMeta, onCanvasMounted]);
+
+  return (
+    <div className="bg-white rounded-sm shadow-2xl overflow-hidden border border-slate-300">
+      <canvas ref={canvasRef} className="block" />
+    </div>
+  );
+};
 
 interface PaperCanvasProps {
   pages: PageLayout[];
   paperConfig: PaperConfig;
+  onUpdatePaperConfig?: (config: PaperConfig) => void;
   handwritingConfig: HandwritingStyleConfig;
   studentMeta: StudentProject['studentMeta'];
   onRegisterCanvases: (canvases: HTMLCanvasElement[]) => void;
@@ -14,6 +68,7 @@ interface PaperCanvasProps {
 export const PaperCanvas: React.FC<PaperCanvasProps> = ({
   pages,
   paperConfig,
+  onUpdatePaperConfig,
   handwritingConfig,
   studentMeta,
   onRegisterCanvases,
@@ -22,27 +77,17 @@ export const PaperCanvas: React.FC<PaperCanvasProps> = ({
   const [viewMode, setViewMode] = useState<ViewMode>('single');
   const [zoom, setZoom] = useState(0.85); // 85% scale fits comfortably on desktop
 
-  const canvasRefs = useRef<(HTMLCanvasElement | null)[]>([]);
+  const canvasMapRef = useRef<Map<number, HTMLCanvasElement>>(new Map());
 
-  // Keep canvas refs length matching pages length
-  useEffect(() => {
-    canvasRefs.current = canvasRefs.current.slice(0, pages.length);
-  }, [pages.length]);
-
-  // Render canvases whenever pages, paperConfig, handwritingConfig, or studentMeta change
-  useEffect(() => {
-    const activeCanvases: HTMLCanvasElement[] = [];
-
-    pages.forEach((page, index) => {
-      const canvas = canvasRefs.current[index];
-      if (canvas) {
-        renderPageToCanvas(canvas, page, paperConfig, handwritingConfig, studentMeta);
-        activeCanvases.push(canvas);
-      }
-    });
-
-    onRegisterCanvases(activeCanvases);
-  }, [pages, paperConfig, handwritingConfig, studentMeta, onRegisterCanvases]);
+  const registerCanvas = (pageIndex: number, canvas: HTMLCanvasElement) => {
+    canvasMapRef.current.set(pageIndex, canvas);
+    const list: HTMLCanvasElement[] = [];
+    for (let i = 0; i < pages.length; i++) {
+      const c = canvasMapRef.current.get(i);
+      if (c) list.push(c);
+    }
+    onRegisterCanvases(list);
+  };
 
   const handlePrevPage = () => {
     setCurrentPage((prev) => Math.max(0, prev - (viewMode === 'double' ? 2 : 1)));
@@ -144,6 +189,40 @@ export const PaperCanvas: React.FC<PaperCanvasProps> = ({
         </div>
       </div>
 
+      {/* Quick Paper Carousel Bar (Pelajar, Mahasiswa, Guru, Dosen) */}
+      <div className="bg-slate-50 border-b border-slate-200 px-3 py-1.5 flex items-center space-x-1.5 overflow-x-auto text-[11px] select-none scrollbar-none shrink-0">
+        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider shrink-0 mr-1">
+          Kertas Cepat:
+        </span>
+
+        {[
+          { id: 'ruled' as PaperType, label: 'Buku SIDU', icon: FileText, desc: 'Sekolah' },
+          { id: 'folio' as PaperType, label: 'Double Folio', icon: FileText, desc: 'Tugas Kuliah/PR' },
+          { id: 'looseleaf' as PaperType, label: 'Loose Leaf', icon: Layers, desc: 'Binder Mahasiswa' },
+          { id: 'grid' as PaperType, label: 'Kotak Matematika', icon: Grid, desc: '5mm Sains' },
+          { id: 'grid-large' as PaperType, label: 'Kotak Besar', icon: Grid, desc: '10mm Aksara' },
+          { id: 'lined-3' as PaperType, label: 'Garis 3 Halus', icon: PenTool, desc: 'Tegak Bersambung' },
+          { id: 'exam' as PaperType, label: 'Lembar Ujian', icon: FileCheck, desc: 'Resmi UTS/UAS' },
+          { id: 'millimeter' as PaperType, label: 'Milimeter Blok', icon: FileSpreadsheet, desc: 'Grafik Teknik' },
+          { id: 'music' as PaperType, label: 'Not Balok', icon: Music, desc: 'Stave Musik' },
+          { id: 'plain' as PaperType, label: 'Polos Ivory', icon: FileText, desc: 'HVS Bebas' },
+        ].map((item) => (
+          <button
+            key={item.id}
+            onClick={() => onUpdatePaperConfig && onUpdatePaperConfig(createPaperConfig(item.id, paperConfig.size || 'A4'))}
+            className={`flex items-center space-x-1.5 px-2.5 py-1 rounded-md transition-all shrink-0 font-medium ${
+              paperConfig.type === item.id
+                ? 'bg-indigo-600 text-white font-semibold shadow-xs ring-1 ring-indigo-500'
+                : 'bg-white text-slate-600 hover:bg-slate-200 border border-slate-200'
+            }`}
+            title={`${item.label} (${item.desc})`}
+          >
+            <item.icon className="w-3 h-3" />
+            <span>{item.label}</span>
+          </button>
+        ))}
+      </div>
+
       {/* Canvas Viewport */}
       <div className="flex-1 overflow-auto p-8 flex items-center justify-center">
         {viewMode === 'single' && (
@@ -153,17 +232,16 @@ export const PaperCanvas: React.FC<PaperCanvasProps> = ({
           >
             {pages.map((page, idx) => (
               <div
-                key={page.pageNumber}
+                key={`single-${page.pageNumber}`}
                 className={idx === currentPage ? 'block' : 'hidden'}
               >
-                <div className="bg-white rounded shadow-2xl overflow-hidden border border-slate-300">
-                  <canvas
-                    ref={(el) => {
-                      canvasRefs.current[idx] = el;
-                    }}
-                    className="block"
-                  />
-                </div>
+                <SingleCanvasView
+                  page={page}
+                  paperConfig={paperConfig}
+                  handwritingConfig={handwritingConfig}
+                  studentMeta={studentMeta}
+                  onCanvasMounted={(c) => registerCanvas(idx, c)}
+                />
               </div>
             ))}
           </div>
@@ -177,11 +255,12 @@ export const PaperCanvas: React.FC<PaperCanvasProps> = ({
             {/* Left Page */}
             {pages[currentPage] && (
               <div className="relative border-r border-slate-300">
-                <canvas
-                  ref={(el) => {
-                    canvasRefs.current[currentPage] = el;
-                  }}
-                  className="block"
+                <SingleCanvasView
+                  page={pages[currentPage]}
+                  paperConfig={paperConfig}
+                  handwritingConfig={handwritingConfig}
+                  studentMeta={studentMeta}
+                  onCanvasMounted={(c) => registerCanvas(currentPage, c)}
                 />
                 {/* Notebook Center Spine Shadow */}
                 <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-black/15 to-transparent pointer-events-none" />
@@ -191,11 +270,12 @@ export const PaperCanvas: React.FC<PaperCanvasProps> = ({
             {/* Right Page */}
             {pages[currentPage + 1] ? (
               <div className="relative">
-                <canvas
-                  ref={(el) => {
-                    canvasRefs.current[currentPage + 1] = el;
-                  }}
-                  className="block"
+                <SingleCanvasView
+                  page={pages[currentPage + 1]}
+                  paperConfig={paperConfig}
+                  handwritingConfig={handwritingConfig}
+                  studentMeta={studentMeta}
+                  onCanvasMounted={(c) => registerCanvas(currentPage + 1, c)}
                 />
                 {/* Notebook Center Spine Shadow */}
                 <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-black/15 to-transparent pointer-events-none" />
@@ -221,15 +301,13 @@ export const PaperCanvas: React.FC<PaperCanvasProps> = ({
             style={{ transform: `scale(${zoom})` }}
           >
             {pages.map((page, idx) => (
-              <div
-                key={page.pageNumber}
-                className="bg-white rounded shadow-2xl overflow-hidden border border-slate-300"
-              >
-                <canvas
-                  ref={(el) => {
-                    canvasRefs.current[idx] = el;
-                  }}
-                  className="block"
+              <div key={`grid-${page.pageNumber}`}>
+                <SingleCanvasView
+                  page={page}
+                  paperConfig={paperConfig}
+                  handwritingConfig={handwritingConfig}
+                  studentMeta={studentMeta}
+                  onCanvasMounted={(c) => registerCanvas(idx, c)}
                 />
               </div>
             ))}
