@@ -41,6 +41,12 @@ export function drawPaperBackground(
   const shouldDrawMargins = paperConfig.showMargins === true;
 
   if (shouldDrawLines) {
+    ctx.save();
+    ctx.globalAlpha = paperConfig.lineOpacity ?? 0.5;
+    if (paperConfig.lineStyle === 'dashed') ctx.setLineDash([6, 4]);
+    else if (paperConfig.lineStyle === 'dotted') ctx.setLineDash([2, 3]);
+    else ctx.setLineDash([]);
+
     if (paperConfig.type === 'ruled' || paperConfig.type === 'looseleaf') {
       ctx.lineWidth = 1;
       ctx.strokeStyle = paperConfig.lineColor || '#93c5fd';
@@ -191,10 +197,13 @@ export function drawPaperBackground(
         ctx.stroke();
       }
     }
+    ctx.restore();
   }
 
   // Margin line drawings (Only drawn if explicitly enabled)
   if (shouldDrawMargins) {
+    ctx.save();
+    ctx.globalAlpha = paperConfig.lineOpacity ? Math.min(1.0, paperConfig.lineOpacity * 1.3) : 0.65;
     if (paperConfig.hasLeftMargin && paperConfig.marginLineColor !== 'transparent') {
       ctx.strokeStyle = paperConfig.marginLineColor || '#ef4444';
       ctx.lineWidth = 1.5;
@@ -213,6 +222,7 @@ export function drawPaperBackground(
       ctx.lineTo(rightM, heightPx);
       ctx.stroke();
     }
+    ctx.restore();
   }
 
   if (paperConfig.type === 'exam') {

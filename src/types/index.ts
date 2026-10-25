@@ -67,6 +67,8 @@ export interface PaperConfig {
   paperTexture: 'smooth' | 'subtle-cream' | 'vintage' | 'pure-white';
   showLines?: boolean;
   showMargins?: boolean;
+  lineOpacity?: number; // 0.1 to 1.0 (subtle vs bold)
+  lineStyle?: 'solid' | 'dashed' | 'dotted';
   showHoles?: boolean; // Loose leaf rings
   showHeaderInfo?: boolean; // Exam header
 }

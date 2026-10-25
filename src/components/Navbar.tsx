@@ -1,5 +1,5 @@
 import { StudentProject } from '@/types';
-import { BookOpen, Download, FileText, FolderOpen, PenTool, Sparkles, Upload } from 'lucide-react';
+import { BookOpen, Download, FileText, FolderOpen, HelpCircle, PenTool, Sparkles, Upload } from 'lucide-react';
 import React from 'react';
 
 interface NavbarProps {
@@ -10,6 +10,7 @@ interface NavbarProps {
   onOpenAi: () => void;
   onOpenExport: () => void;
   onOpenProjects: () => void;
+  onOpenTour?: () => void;
   isSaving?: boolean;
 }
 
@@ -21,6 +22,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenAi,
   onOpenExport,
   onOpenProjects,
+  onOpenTour,
   isSaving,
 }) => {
   return (
@@ -87,6 +89,17 @@ export const Navbar: React.FC<NavbarProps> = ({
           <FolderOpen className="w-4 h-4 text-slate-600" />
           <span className="hidden md:inline">Proyek</span>
         </button>
+
+        {onOpenTour && (
+          <button
+            onClick={onOpenTour}
+            className="flex items-center space-x-1.5 px-3 py-1.5 text-xs font-medium text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 rounded-lg transition-colors"
+            title="Panduan Cara Menggunakan AI Handwriting Studio"
+          >
+            <HelpCircle className="w-4 h-4 text-indigo-600" />
+            <span className="hidden lg:inline">Panduan</span>
+          </button>
+        )}
 
         <button
           onClick={onOpenExport}

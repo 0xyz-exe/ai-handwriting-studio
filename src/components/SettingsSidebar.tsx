@@ -404,40 +404,112 @@ export const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
             </div>
 
             {/* Tampilan Garis & Margin */}
-            <div className="border-t border-slate-200 pt-4 space-y-2.5">
+            <div className="border-t border-slate-200 pt-4 space-y-3">
               <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">
-                Visibilitas Garis
+                Kustomisasi Garis Buku (Ruled Lines)
               </label>
 
-              <label className="flex items-center space-x-2 text-xs font-semibold text-slate-700 cursor-pointer">
+              <div className="space-y-2">
+                <label className="flex items-center space-x-2 text-xs font-semibold text-slate-700 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={!!paperConfig.showLines}
+                    onChange={(e) =>
+                      onUpdatePaperConfig({
+                        ...paperConfig,
+                        showLines: e.target.checked,
+                      })
+                    }
+                    className="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4"
+                  />
+                  <span>Tampilkan Garis Buku</span>
+                </label>
+
+                <label className="flex items-center space-x-2 text-xs font-semibold text-slate-700 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={!!paperConfig.showMargins}
+                    onChange={(e) =>
+                      onUpdatePaperConfig({
+                        ...paperConfig,
+                        showMargins: e.target.checked,
+                      })
+                    }
+                    className="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4"
+                  />
+                  <span>Tampilkan Garis Tepi (Margin Merah)</span>
+                </label>
+              </div>
+
+              {/* Ruled Line Color Palettes */}
+              <div className="pt-2">
+                <label className="block text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
+                  Variasi Warna Garis Kertas:
+                </label>
+                <div className="grid grid-cols-4 gap-1.5">
+                  {[
+                    { label: 'Biru SIDU', color: '#60a5fa' },
+                    { label: 'Abu Minimalis', color: '#94a3b8' },
+                    { label: 'Cokelat Sepia', color: '#b49a78' },
+                    { label: 'Hijau Sains', color: '#22c55e' },
+                    { label: 'Oranye Teknik', color: '#ea580c' },
+                    { label: 'Lavender', color: '#c084fc' },
+                    { label: 'Arang Hitam', color: '#334155' },
+                    { label: 'Koral Merah', color: '#f87171' },
+                  ].map((swatch) => (
+                    <button
+                      key={swatch.color}
+                      onClick={() =>
+                        onUpdatePaperConfig({
+                          ...paperConfig,
+                          lineColor: swatch.color,
+                          showLines: true,
+                        })
+                      }
+                      className={`p-1.5 rounded-md border flex items-center space-x-1.5 transition-all text-[10px] ${
+                        paperConfig.lineColor === swatch.color
+                          ? 'border-indigo-600 bg-indigo-50 font-bold ring-1 ring-indigo-500'
+                          : 'border-slate-200 hover:bg-slate-50'
+                      }`}
+                    >
+                      <span
+                        className="w-3 h-3 rounded-full shrink-0 border border-black/10"
+                        style={{ backgroundColor: swatch.color }}
+                      />
+                      <span className="truncate">{swatch.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Opasitas Garis (Agar tidak mengganggu) */}
+              <div className="pt-1">
+                <div className="flex justify-between text-xs font-medium mb-1">
+                  <span>Kepekatan Garis (Opasitas)</span>
+                  <span className="font-mono text-slate-500">
+                    {Math.round((paperConfig.lineOpacity ?? 0.5) * 100)}%
+                  </span>
+                </div>
                 <input
-                  type="checkbox"
-                  checked={!!paperConfig.showLines}
+                  type="range"
+                  min="0.1"
+                  max="1.0"
+                  step="0.05"
+                  value={paperConfig.lineOpacity ?? 0.5}
                   onChange={(e) =>
                     onUpdatePaperConfig({
                       ...paperConfig,
-                      showLines: e.target.checked,
+                      lineOpacity: Number(e.target.value),
                     })
                   }
-                  className="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4"
+                  className="w-full accent-indigo-600"
                 />
-                <span>Tampilkan Garis Buku (Ruled Lines)</span>
-              </label>
-
-              <label className="flex items-center space-x-2 text-xs font-semibold text-slate-700 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={!!paperConfig.showMargins}
-                  onChange={(e) =>
-                    onUpdatePaperConfig({
-                      ...paperConfig,
-                      showMargins: e.target.checked,
-                    })
-                  }
-                  className="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4"
-                />
-                <span>Tampilkan Garis Margin Tepi Merah</span>
-              </label>
+                <div className="flex justify-between text-[9px] text-slate-400 mt-0.5">
+                  <span>Sangat Samar</span>
+                  <span>Nyaman</span>
+                  <span>Tegas</span>
+                </div>
+              </div>
             </div>
 
             {/* Smart Fitting Controls */}

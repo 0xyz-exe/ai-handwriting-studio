@@ -13,6 +13,7 @@ import { ImportModal } from '@/components/ImportModal';
 import { Navbar } from '@/components/Navbar';
 import { PaperCanvas } from '@/components/PaperCanvas';
 import { ProjectManagerModal } from '@/components/ProjectManagerModal';
+import { QuickTour } from '@/components/QuickTour';
 import { SettingsSidebar } from '@/components/SettingsSidebar';
 import { calculateDocumentLayout } from '@/lib/layout-engine';
 import {
@@ -44,8 +45,9 @@ export default function Home() {
   const [isAiOpen, setIsAiOpen] = useState(false);
   const [isImportOpen, setIsImportOpen] = useState(false);
   const [isExportOpen, setIsExportOpen] = useState(false);
+  const [isTourOpen, setIsTourOpen] = useState(false);
 
-  // Load projects from storage on initial mount
+  // Load projects from storage on initial mount & check first visit tour
   useEffect(() => {
     const rawList = getSavedProjects();
     const list = rawList.map((p) => ({
@@ -66,6 +68,11 @@ export default function Home() {
       setProjects([initial]);
       setActiveProject(initial);
       saveProject(initial);
+    }
+
+    // Auto-open tour on first visit
+    if (typeof window !== 'undefined' && !localStorage.getItem('ai_handwriting_studio_tour_seen')) {
+      setIsTourOpen(true);
     }
   }, []);
 
@@ -227,6 +234,7 @@ export default function Home() {
           setIsExportOpen(true);
         }}
         onOpenProjects={() => setIsProjectsOpen(true)}
+        onOpenTour={() => setIsTourOpen(true)}
         isSaving={isSaving}
       />
 
@@ -306,6 +314,17 @@ export default function Home() {
         onCreateNewProject={handleCreateNewProject}
         onSelectTemplate={handleSelectTemplate}
         initialTab={isTemplatesOpen ? 'templates' : 'projects'}
+      />
+
+      {/* Quick Interactive Guided Tour */}
+      <QuickTour
+        isOpen={isTourOpen}
+        onClose={() => {
+          setIsTourOpen(false);
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('ai_handwriting_studio_tour_seen', 'true');
+          }
+        }}
       />
     </div>
   );
