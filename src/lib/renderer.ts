@@ -36,31 +36,165 @@ export function drawPaperBackground(
     }
   }
 
-  // 2. Paper line drawings
-  if (paperConfig.type === 'ruled' || paperConfig.type === 'looseleaf') {
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = paperConfig.lineColor || '#93c5fd';
+  // 2. Paper line drawings (Only drawn if explicitly enabled)
+  const shouldDrawLines = paperConfig.showLines === true;
+  const shouldDrawMargins = paperConfig.showMargins === true;
 
-    const startY = paperConfig.topMarginPx || 96;
-    const endY = heightPx - (paperConfig.bottomMarginPx || 64);
-    const lineSpacing = paperConfig.lineSpacingPx || 32;
+  if (shouldDrawLines) {
+    if (paperConfig.type === 'ruled' || paperConfig.type === 'looseleaf') {
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = paperConfig.lineColor || '#93c5fd';
 
-    // Double top header line
-    ctx.beginPath();
-    ctx.moveTo(0, startY - 8);
-    ctx.lineTo(widthPx, startY - 8);
-    ctx.moveTo(0, startY - 4);
-    ctx.lineTo(widthPx, startY - 4);
-    ctx.stroke();
+      const startY = paperConfig.topMarginPx || 96;
+      const endY = heightPx - (paperConfig.bottomMarginPx || 64);
+      const lineSpacing = paperConfig.lineSpacingPx || 32;
 
-    for (let y = startY; y <= endY; y += lineSpacing) {
+      // Double top header line
       ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(widthPx, y);
+      ctx.moveTo(0, startY - 8);
+      ctx.lineTo(widthPx, startY - 8);
+      ctx.moveTo(0, startY - 4);
+      ctx.lineTo(widthPx, startY - 4);
       ctx.stroke();
-    }
 
-    // Left vertical margin line
+      for (let y = startY; y <= endY; y += lineSpacing) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(widthPx, y);
+        ctx.stroke();
+      }
+    } else if (paperConfig.type === 'folio') {
+      // Double Folio Bergaris
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = paperConfig.lineColor || '#93c5fd';
+
+      const startY = paperConfig.topMarginPx || 80;
+      const endY = heightPx - (paperConfig.bottomMarginPx || 64);
+      const lineSpacing = paperConfig.lineSpacingPx || 30;
+
+      for (let y = startY; y <= endY; y += lineSpacing) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(widthPx, y);
+        ctx.stroke();
+      }
+    } else if (paperConfig.type === 'lined-3') {
+      // Buku Garis 3 (Tulis Halus / Huruf Tegak Bersambung)
+      const startY = paperConfig.topMarginPx || 96;
+      const endY = heightPx - (paperConfig.bottomMarginPx || 64);
+      const lineSpacing = paperConfig.lineSpacingPx || 38;
+
+      for (let y = startY; y <= endY; y += lineSpacing) {
+        // Main top and bottom lines
+        ctx.lineWidth = 1.2;
+        ctx.strokeStyle = paperConfig.lineColor || '#3b82f6';
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(widthPx, y);
+        ctx.stroke();
+
+        // Middle dashed helper line
+        ctx.save();
+        ctx.lineWidth = 0.8;
+        ctx.setLineDash([4, 4]);
+        ctx.strokeStyle = paperConfig.subLineColor || '#93c5fd';
+        ctx.beginPath();
+        ctx.moveTo(0, y - lineSpacing * 0.5);
+        ctx.lineTo(widthPx, y - lineSpacing * 0.5);
+        ctx.stroke();
+        ctx.restore();
+      }
+    } else if (paperConfig.type === 'grid' || paperConfig.type === 'grid-large') {
+      const grid = paperConfig.gridSizePx || (paperConfig.type === 'grid-large' ? 42 : 26);
+      ctx.lineWidth = 0.75;
+      ctx.strokeStyle = paperConfig.lineColor || '#cbd5e1';
+
+      for (let x = 0; x <= widthPx; x += grid) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, heightPx);
+        ctx.stroke();
+      }
+
+      for (let y = 0; y <= heightPx; y += grid) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(widthPx, y);
+        ctx.stroke();
+      }
+    } else if (paperConfig.type === 'millimeter') {
+      // Kertas Milimeter Blok
+      const subGrid = paperConfig.gridSizePx || 10;
+      const majorGrid = subGrid * 5;
+
+      // Minor lines
+      ctx.lineWidth = 0.5;
+      ctx.strokeStyle = paperConfig.subLineColor || '#fdba74';
+      for (let x = 0; x <= widthPx; x += subGrid) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, heightPx);
+        ctx.stroke();
+      }
+      for (let y = 0; y <= heightPx; y += subGrid) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(widthPx, y);
+        ctx.stroke();
+      }
+
+      // Major lines
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = paperConfig.lineColor || '#f97316';
+      for (let x = 0; x <= widthPx; x += majorGrid) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, heightPx);
+        ctx.stroke();
+      }
+      for (let y = 0; y <= heightPx; y += majorGrid) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(widthPx, y);
+        ctx.stroke();
+      }
+    } else if (paperConfig.type === 'music') {
+      // 5-line Stave systems
+      const staveSpacing = 8;
+      const systemSpacing = paperConfig.lineSpacingPx || 48;
+      const startY = paperConfig.topMarginPx || 90;
+      const endY = heightPx - (paperConfig.bottomMarginPx || 70);
+
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = paperConfig.lineColor || '#1e293b';
+
+      for (let sysY = startY; sysY <= endY; sysY += systemSpacing) {
+        for (let s = 0; s < 5; s++) {
+          const lineY = sysY + s * staveSpacing;
+          ctx.beginPath();
+          ctx.moveTo(40, lineY);
+          ctx.lineTo(widthPx - 40, lineY);
+          ctx.stroke();
+        }
+      }
+    } else if (paperConfig.type === 'exam') {
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = paperConfig.lineColor || '#94a3b8';
+      const startY = paperConfig.topMarginPx || 170;
+      const endY = heightPx - (paperConfig.bottomMarginPx || 64);
+      const lineSpacing = paperConfig.lineSpacingPx || 34;
+
+      for (let y = startY; y <= endY; y += lineSpacing) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(widthPx, y);
+        ctx.stroke();
+      }
+    }
+  }
+
+  // Margin line drawings (Only drawn if explicitly enabled)
+  if (shouldDrawMargins) {
     if (paperConfig.hasLeftMargin && paperConfig.marginLineColor !== 'transparent') {
       ctx.strokeStyle = paperConfig.marginLineColor || '#ef4444';
       ctx.lineWidth = 1.5;
@@ -69,35 +203,8 @@ export function drawPaperBackground(
       ctx.lineTo(paperConfig.leftMarginPx || 105, heightPx);
       ctx.stroke();
     }
-  } else if (paperConfig.type === 'folio') {
-    // Double Folio Bergaris
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = paperConfig.lineColor || '#93c5fd';
 
-    const startY = paperConfig.topMarginPx || 80;
-    const endY = heightPx - (paperConfig.bottomMarginPx || 64);
-    const lineSpacing = paperConfig.lineSpacingPx || 30;
-
-    for (let y = startY; y <= endY; y += lineSpacing) {
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(widthPx, y);
-      ctx.stroke();
-    }
-
-    // Left double margin line (khas folio bergaris Indonesia)
-    const leftM = paperConfig.leftMarginPx || 90;
-    ctx.strokeStyle = paperConfig.marginLineColor || '#dc2626';
-    ctx.lineWidth = 1.2;
-    ctx.beginPath();
-    ctx.moveTo(leftM - 5, 0);
-    ctx.lineTo(leftM - 5, heightPx);
-    ctx.moveTo(leftM, 0);
-    ctx.lineTo(leftM, heightPx);
-    ctx.stroke();
-
-    // Right margin line
-    if (paperConfig.hasRightMargin) {
+    if (paperConfig.type === 'folio' && paperConfig.hasRightMargin) {
       const rightM = widthPx - (paperConfig.rightMarginPx || 60);
       ctx.strokeStyle = '#60a5fa';
       ctx.lineWidth = 1.2;
@@ -106,145 +213,9 @@ export function drawPaperBackground(
       ctx.lineTo(rightM, heightPx);
       ctx.stroke();
     }
-  } else if (paperConfig.type === 'lined-3') {
-    // Buku Garis 3 (Tulis Halus / Huruf Tegak Bersambung)
-    const startY = paperConfig.topMarginPx || 96;
-    const endY = heightPx - (paperConfig.bottomMarginPx || 64);
-    const lineSpacing = paperConfig.lineSpacingPx || 38;
+  }
 
-    for (let y = startY; y <= endY; y += lineSpacing) {
-      // Main top and bottom lines
-      ctx.lineWidth = 1.2;
-      ctx.strokeStyle = paperConfig.lineColor || '#3b82f6';
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(widthPx, y);
-      ctx.stroke();
-
-      // Middle dashed helper line
-      ctx.save();
-      ctx.lineWidth = 0.8;
-      ctx.setLineDash([4, 4]);
-      ctx.strokeStyle = paperConfig.subLineColor || '#93c5fd';
-      ctx.beginPath();
-      ctx.moveTo(0, y - lineSpacing * 0.5);
-      ctx.lineTo(widthPx, y - lineSpacing * 0.5);
-      ctx.stroke();
-      ctx.restore();
-    }
-
-    if (paperConfig.hasLeftMargin) {
-      ctx.strokeStyle = paperConfig.marginLineColor || '#ef4444';
-      ctx.lineWidth = 1.5;
-      ctx.beginPath();
-      ctx.moveTo(paperConfig.leftMarginPx || 96, 0);
-      ctx.lineTo(paperConfig.leftMarginPx || 96, heightPx);
-      ctx.stroke();
-    }
-  } else if (paperConfig.type === 'grid' || paperConfig.type === 'grid-large') {
-    const grid = paperConfig.gridSizePx || (paperConfig.type === 'grid-large' ? 42 : 26);
-    ctx.lineWidth = 0.75;
-    ctx.strokeStyle = paperConfig.lineColor || '#cbd5e1';
-
-    for (let x = 0; x <= widthPx; x += grid) {
-      ctx.beginPath();
-      ctx.moveTo(x, 0);
-      ctx.lineTo(x, heightPx);
-      ctx.stroke();
-    }
-
-    for (let y = 0; y <= heightPx; y += grid) {
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(widthPx, y);
-      ctx.stroke();
-    }
-
-    if (paperConfig.hasLeftMargin) {
-      ctx.strokeStyle = paperConfig.marginLineColor || '#ef4444';
-      ctx.lineWidth = 1.5;
-      ctx.beginPath();
-      ctx.moveTo(paperConfig.leftMarginPx || 84, 0);
-      ctx.lineTo(paperConfig.leftMarginPx || 84, heightPx);
-      ctx.stroke();
-    }
-  } else if (paperConfig.type === 'millimeter') {
-    // Kertas Milimeter Blok
-    const subGrid = paperConfig.gridSizePx || 10;
-    const majorGrid = subGrid * 5;
-
-    // Minor lines
-    ctx.lineWidth = 0.5;
-    ctx.strokeStyle = paperConfig.subLineColor || '#fdba74';
-    for (let x = 0; x <= widthPx; x += subGrid) {
-      ctx.beginPath();
-      ctx.moveTo(x, 0);
-      ctx.lineTo(x, heightPx);
-      ctx.stroke();
-    }
-    for (let y = 0; y <= heightPx; y += subGrid) {
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(widthPx, y);
-      ctx.stroke();
-    }
-
-    // Major lines
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = paperConfig.lineColor || '#f97316';
-    for (let x = 0; x <= widthPx; x += majorGrid) {
-      ctx.beginPath();
-      ctx.moveTo(x, 0);
-      ctx.lineTo(x, heightPx);
-      ctx.stroke();
-    }
-    for (let y = 0; y <= heightPx; y += majorGrid) {
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(widthPx, y);
-      ctx.stroke();
-    }
-  } else if (paperConfig.type === 'music') {
-    // 5-line Stave systems
-    const staveSpacing = 8;
-    const systemSpacing = paperConfig.lineSpacingPx || 48;
-    const startY = paperConfig.topMarginPx || 90;
-    const endY = heightPx - (paperConfig.bottomMarginPx || 70);
-
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = paperConfig.lineColor || '#1e293b';
-
-    for (let sysY = startY; sysY <= endY; sysY += systemSpacing) {
-      for (let s = 0; s < 5; s++) {
-        const lineY = sysY + s * staveSpacing;
-        ctx.beginPath();
-        ctx.moveTo(40, lineY);
-        ctx.lineTo(widthPx - 40, lineY);
-        ctx.stroke();
-      }
-    }
-  } else if (paperConfig.type === 'exam') {
-    // Ruled lines below header
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = paperConfig.lineColor;
-    const startY = paperConfig.topMarginPx;
-    const endY = heightPx - paperConfig.bottomMarginPx;
-    const lineSpacing = paperConfig.lineSpacingPx;
-
-    for (let y = startY; y <= endY; y += lineSpacing) {
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(widthPx, y);
-      ctx.stroke();
-    }
-
-    // Left margin line
-    ctx.strokeStyle = paperConfig.marginLineColor;
-    ctx.lineWidth = 1.5;
-    ctx.beginPath();
-    ctx.moveTo(paperConfig.leftMarginPx, startY);
-    ctx.lineTo(paperConfig.leftMarginPx, heightPx);
-    ctx.stroke();
+  if (paperConfig.type === 'exam') {
 
     // Formal Exam Header Box
     ctx.strokeStyle = '#475569';

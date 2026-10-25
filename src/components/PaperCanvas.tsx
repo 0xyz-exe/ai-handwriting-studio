@@ -2,6 +2,7 @@ import { HandwritingStyleConfig, PageLayout, PaperConfig, PaperType, StudentProj
 import { createPaperConfig } from '@/lib/paper-templates';
 import { renderPageToCanvas } from '@/lib/renderer';
 import {
+  AlignJustify,
   ChevronLeft,
   ChevronRight,
   Columns,
@@ -197,6 +198,26 @@ export const PaperCanvas: React.FC<PaperCanvasProps> = ({
 
         {/* Drag Pan Indicator & Zoom Controls */}
         <div className="flex items-center space-x-2 text-xs font-medium text-slate-600">
+          {/* Toggle Lines Button */}
+          <button
+            onClick={() =>
+              onUpdatePaperConfig?.({
+                ...paperConfig,
+                showLines: !paperConfig.showLines,
+                showMargins: !paperConfig.showLines,
+              })
+            }
+            className={`flex items-center space-x-1 px-2 py-1 rounded-md transition-all text-xs font-medium border ${
+              paperConfig.showLines
+                ? 'bg-blue-50 text-blue-700 border-blue-300'
+                : 'bg-white text-slate-600 hover:bg-slate-100 border-slate-200'
+            }`}
+            title="Sembunyikan atau Tampilkan Garis Kertas"
+          >
+            <AlignJustify className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">{paperConfig.showLines ? 'Garis: Nyala' : 'Garis: Mati'}</span>
+          </button>
+
           <div
             className="hidden lg:flex items-center space-x-1 text-[11px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200"
             title="Tekan & geser mouse untuk menggeser posisi kertas"

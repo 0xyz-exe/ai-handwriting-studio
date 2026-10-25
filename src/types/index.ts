@@ -65,6 +65,8 @@ export interface PaperConfig {
   bottomMarginPx: number;
   backgroundColor: string;
   paperTexture: 'smooth' | 'subtle-cream' | 'vintage' | 'pure-white';
+  showLines?: boolean;
+  showMargins?: boolean;
   showHoles?: boolean; // Loose leaf rings
   showHeaderInfo?: boolean; // Exam header
 }

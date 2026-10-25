@@ -403,6 +403,43 @@ export const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
               </div>
             </div>
 
+            {/* Tampilan Garis & Margin */}
+            <div className="border-t border-slate-200 pt-4 space-y-2.5">
+              <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">
+                Visibilitas Garis
+              </label>
+
+              <label className="flex items-center space-x-2 text-xs font-semibold text-slate-700 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={!!paperConfig.showLines}
+                  onChange={(e) =>
+                    onUpdatePaperConfig({
+                      ...paperConfig,
+                      showLines: e.target.checked,
+                    })
+                  }
+                  className="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4"
+                />
+                <span>Tampilkan Garis Buku (Ruled Lines)</span>
+              </label>
+
+              <label className="flex items-center space-x-2 text-xs font-semibold text-slate-700 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={!!paperConfig.showMargins}
+                  onChange={(e) =>
+                    onUpdatePaperConfig({
+                      ...paperConfig,
+                      showMargins: e.target.checked,
+                    })
+                  }
+                  className="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4"
+                />
+                <span>Tampilkan Garis Margin Tepi Merah</span>
+              </label>
+            </div>
+
             {/* Smart Fitting Controls */}
             <div className="border-t border-slate-200 pt-4 space-y-3.5">
               <div>

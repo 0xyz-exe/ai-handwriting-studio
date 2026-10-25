@@ -40,6 +40,8 @@ export const DEFAULT_PAPER_TEMPLATES: Record<PaperType, (size: PaperSize) => Pap
       bottomMarginPx: 64,
       backgroundColor: '#fbfbfb',
       paperTexture: 'subtle-cream',
+      showLines: false,
+      showMargins: false,
     };
   },
   folio: (size: PaperSize) => {
@@ -63,6 +65,8 @@ export const DEFAULT_PAPER_TEMPLATES: Record<PaperType, (size: PaperSize) => Pap
       bottomMarginPx: 64,
       backgroundColor: '#fdfdfd',
       paperTexture: 'pure-white',
+      showLines: false,
+      showMargins: false,
     };
   },
   looseleaf: (size: PaperSize) => {
@@ -86,6 +90,8 @@ export const DEFAULT_PAPER_TEMPLATES: Record<PaperType, (size: PaperSize) => Pap
       backgroundColor: '#ffffff',
       paperTexture: 'pure-white',
       showHoles: true,
+      showLines: false,
+      showMargins: false,
     };
   },
   grid: (size: PaperSize) => {

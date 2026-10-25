@@ -47,12 +47,22 @@ export default function Home() {
 
   // Load projects from storage on initial mount
   useEffect(() => {
-    const list = getSavedProjects();
+    const rawList = getSavedProjects();
+    const list = rawList.map((p) => ({
+      ...p,
+      paperConfig: {
+        ...p.paperConfig,
+        showLines: p.paperConfig.showLines ?? false,
+        showMargins: p.paperConfig.showMargins ?? false,
+      },
+    }));
     setProjects(list);
     if (list.length > 0) {
       setActiveProject(list[0]);
     } else {
       const initial = createProjectFromTemplate(SAMPLE_TEMPLATES[0]);
+      initial.paperConfig.showLines = false;
+      initial.paperConfig.showMargins = false;
       setProjects([initial]);
       setActiveProject(initial);
       saveProject(initial);
