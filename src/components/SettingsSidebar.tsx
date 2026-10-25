@@ -44,6 +44,14 @@ export const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
   onUpdateStudentMeta,
 }) => {
   const [activeTab, setActiveTab] = useState<'handwriting' | 'paper' | 'student'>('handwriting');
+  const [fontFilter, setFontFilter] = useState<'all' | 'neat' | 'casual' | 'cursive' | 'architect' | 'expressive'>('all');
+  const [fontSearch, setFontSearch] = useState('');
+
+  const filteredFonts = HANDWRITING_FONTS.filter((font) => {
+    const matchesCategory = fontFilter === 'all' || font.category === fontFilter;
+    const matchesSearch = font.name.toLowerCase().includes(fontSearch.toLowerCase()) || font.description.toLowerCase().includes(fontSearch.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
 
   const handlePresetSelect = (preset: HandwritingPreset) => {
     if (preset === 'custom') {
@@ -123,28 +131,65 @@ export const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
           <div className="space-y-5">
             {/* Font Picker */}
             <div>
-              <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-2">
-                Handwriting Style Library
-              </label>
-              <div className="space-y-1.5">
-                {HANDWRITING_FONTS.map((font) => (
+              <div className="flex items-center justify-between mb-2">
+                <label className="text-[11px] font-bold text-slate-600 uppercase tracking-wider">
+                  Handwriting Style Library ({HANDWRITING_FONTS.length})
+                </label>
+              </div>
+
+              {/* Search font */}
+              <input
+                type="text"
+                value={fontSearch}
+                onChange={(e) => setFontSearch(e.target.value)}
+                placeholder="Cari gaya tulisan..."
+                className="w-full px-2.5 py-1.5 mb-2 bg-slate-50 border border-slate-200 rounded-lg text-xs outline-none focus:ring-1 focus:ring-indigo-500 text-slate-800"
+              />
+
+              {/* Category Filter Chips */}
+              <div className="flex items-center space-x-1 overflow-x-auto pb-1 mb-2 text-[10px] scrollbar-none font-medium">
+                {[
+                  { id: 'all', label: 'Semua' },
+                  { id: 'neat', label: 'Rapi' },
+                  { id: 'casual', label: 'Santai' },
+                  { id: 'cursive', label: 'Sambung' },
+                  { id: 'architect', label: 'Balok' },
+                  { id: 'expressive', label: 'Spidol' },
+                ].map((chip) => (
+                  <button
+                    key={chip.id}
+                    onClick={() => setFontFilter(chip.id as any)}
+                    className={`px-2 py-0.5 rounded-md whitespace-nowrap transition-colors ${
+                      fontFilter === chip.id
+                        ? 'bg-indigo-600 text-white font-bold'
+                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    }`}
+                  >
+                    {chip.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Font Cards List */}
+              <div className="space-y-1.5 max-h-72 overflow-y-auto pr-1">
+                {filteredFonts.map((font) => (
                   <button
                     key={font.id}
                     onClick={() => onUpdateHandwritingConfig({ ...handwritingConfig, fontId: font.id })}
-                    className={`w-full text-left p-2.5 rounded-lg border transition-all ${
+                    className={`w-full text-left p-2 rounded-lg border transition-all ${
                       handwritingConfig.fontId === font.id
                         ? 'border-indigo-600 bg-indigo-50/60 ring-1 ring-indigo-500'
                         : 'border-slate-200 hover:bg-slate-50'
                     }`}
                   >
-                    <div className="font-semibold text-slate-900 flex items-center justify-between">
+                    <div className="font-semibold text-slate-900 flex items-center justify-between text-xs">
                       <span>{font.name}</span>
-                      <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-slate-100 text-slate-500">
+                      <span className="text-[9px] uppercase font-mono px-1 py-0.2 rounded bg-slate-100 text-slate-500">
                         {font.category}
                       </span>
                     </div>
                     <div
-                      className="text-base text-slate-700 mt-1 truncate"
+                      className="text-sm text-slate-700 mt-0.5 truncate"
                       style={{ fontFamily: font.fontFamily }}
                     >
                       Catatan penting untuk tugas kuliah & sekolah.

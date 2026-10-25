@@ -42,7 +42,7 @@ export interface HandwritingFont {
   name: string;
   fontFamily: string;
   sourceUrl?: string;
-  category: 'neat' | 'cursive' | 'casual' | 'architect';
+  category: 'neat' | 'cursive' | 'casual' | 'architect' | 'expressive';
   description: string;
 }
 

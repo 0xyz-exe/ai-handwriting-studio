@@ -102,10 +102,24 @@ Berikut adalah tangkapan layar bagian-bagian utama studio beserta panduan cara m
 3. Bandingkan hasil pada panel *Teks Asli* vs *Hasil AI*, lalu klik **Gunakan Hasil Ini di Editor**.
 4. *Catatan*: Fitur AI memiliki sistem pemrosesan lokal cerdas (*heuristic offline fallback*) sehingga tetap berfungsi lancar tanpa memerlukan API key eksternal.
 
-#### 📷 Cara Menggunakan Import Dokumen / OCR:
+#### 📷 Cara Menggunakan Import Dokumen / OCR Multi-Bahasa:
 1. Klik tombol **`Import / OCR`** di navbar atas.
 2. Pilih tab **Dokumen** untuk mengunggah file `.docx` (Microsoft Word) atau file teks `.txt`.
-3. Pilih tab **OCR Gambar** untuk mengunggah foto soal dari lembar tugas atau foto papan tulis. Tesseract OCR akan mengekstrak tulisan menjadi teks otomatis.
+3. Pilih tab **OCR Gambar** untuk mengunggah foto soal dari lembar tugas atau foto papan tulis.
+4. **Pilih Bahasa OCR Dunia**: Tersedia 12 bahasa utama:
+   - 🇮🇩 Bahasa Indonesia (`ind`)
+   - 🇬🇧 English (`eng`)
+   - 🌐 Campuran Indo + English (`ind+eng`)
+   - 🇸🇦 Arabic / Bahasa Arab (`ara`)
+   - 🇨🇳 Mandarin / Chinese Simplified (`chi_sim`)
+   - 🇯🇵 Japanese (`jpn`)
+   - 🇰🇷 Korean (`kor`)
+   - 🇫🇷 French (`fra`)
+   - 🇪🇸 Spanish (`spa`)
+   - 🇩🇪 German (`deu`)
+   - 🇷🇺 Russian (`rus`)
+   - 🇵🇹 Portuguese (`por`)
+5. Tesseract OCR akan mengekstrak tulisan menjadi teks otomatis lengkap dengan progress bar.
 
 ---
 
@@ -145,8 +159,8 @@ Berikut adalah tangkapan layar bagian-bagian utama studio beserta panduan cara m
 - **Frontend Framework**: Next.js 16 (App Router), React 19, TypeScript.
 - **Styling**: Tailwind CSS dengan tema adaptif untuk kertas dan tinta bolpoin.
 - **Rendering Engine**: HTML5 Canvas rendering dengan PRNG Mulberry32 deterministik, mensimulasikan goresan tinta, variasi kemiringan (*slant*), variasi garis dasar (*baseline jitter*), variasi ukuran karakter, dan tekstur grafit pensil.
-- **Handwriting Fonts**: 9 webfont pilihan dari Google Fonts (Caveat, Kalam, Patrick Hand, Indie Flower, Shadows Into Light, Architects Daughter, Homemade Apple, Marck Script, Reenie Beanie).
-- **OCR Engine**: Tesseract.js (Client-side Web Worker, mendukung Bahasa Indonesia & English).
+- **Handwriting Fonts**: 27 font tulisan tangan Google Fonts yang dikelompokkan ke dalam kategori Rapi, Santai/Kuliah, Sambung Klasik, Balok Gambar Teknik, dan Pensil.
+- **OCR Engine**: Tesseract.js (Client-side Web Worker, mendukung 12 bahasa dunia: Indonesia, English, Arabic, Chinese, Japanese, Korean, French, Spanish, German, Russian, Portuguese, dan Campuran).
 - **Document Parser**: Mammoth.js (ekstraksi file docx).
 - **Math Engine**: KaTeX untuk pemrosesan notasi matematika.
 - **PDF Engine**: jsPDF dengan pemetaan dimensi milimeter presisi ukuran kertas internasional dan nasional (F4).

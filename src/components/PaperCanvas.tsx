@@ -137,6 +137,26 @@ export const PaperCanvas: React.FC<PaperCanvasProps> = ({
     setIsDragging(false);
   };
 
+  // Mouse wheel zoom in / out
+  const viewportRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = viewportRef.current;
+    if (!el) return;
+
+    const onWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      const zoomStep = e.deltaY < 0 ? 0.08 : -0.08;
+      setZoom((prev) => {
+        const next = Math.min(2.5, Math.max(0.25, prev + zoomStep));
+        return Math.round(next * 100) / 100;
+      });
+    };
+
+    el.addEventListener('wheel', onWheel, { passive: false });
+    return () => el.removeEventListener('wheel', onWheel);
+  }, []);
+
   const handleResetView = () => {
     setZoom(0.85);
     setPanOffset({ x: 0, y: 0 });
@@ -306,8 +326,9 @@ export const PaperCanvas: React.FC<PaperCanvasProps> = ({
         ))}
       </div>
 
-      {/* Interactive Free-Drag Pan Viewport */}
+      {/* Interactive Free-Drag Pan Viewport with Mouse Wheel Zoom */}
       <div
+        ref={viewportRef}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}

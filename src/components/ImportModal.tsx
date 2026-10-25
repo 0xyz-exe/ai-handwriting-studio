@@ -106,30 +106,29 @@ export const ImportModal: React.FC<ImportModalProps> = ({ isOpen, onClose, onImp
         {/* Body */}
         <div className="p-6 overflow-y-auto space-y-4">
           {activeTab === 'ocr' && (
-            <div className="flex items-center space-x-3 text-xs mb-2">
-              <span className="font-semibold text-slate-700">Bahasa OCR:</span>
-              <label className="flex items-center space-x-1 cursor-pointer">
-                <input
-                  type="radio"
-                  name="ocrLang"
-                  value="ind"
-                  checked={ocrLang === 'ind'}
-                  onChange={() => setOcrLang('ind')}
-                  className="accent-indigo-600"
-                />
-                <span>Bahasa Indonesia</span>
-              </label>
-              <label className="flex items-center space-x-1 cursor-pointer">
-                <input
-                  type="radio"
-                  name="ocrLang"
-                  value="eng"
-                  checked={ocrLang === 'eng'}
-                  onChange={() => setOcrLang('eng')}
-                  className="accent-indigo-600"
-                />
-                <span>English</span>
-              </label>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-slate-50 p-3 rounded-lg border border-slate-200 text-xs">
+              <div>
+                <span className="font-bold text-slate-800 block">Bahasa Teks pada Foto/Gambar:</span>
+                <span className="text-[10px] text-slate-400">Tesseract OCR akan memuat model bahasa yang dipilih</span>
+              </div>
+              <select
+                value={ocrLang}
+                onChange={(e) => setOcrLang(e.target.value)}
+                className="px-3 py-1.5 bg-white border border-slate-300 rounded-md font-semibold text-slate-800 text-xs outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer"
+              >
+                <option value="ind">🇮🇩 Bahasa Indonesia</option>
+                <option value="eng">🇬🇧 English</option>
+                <option value="ind+eng">🌐 Campuran Indo + English</option>
+                <option value="ara">🇸🇦 Arabic (العربية)</option>
+                <option value="chi_sim">🇨🇳 Chinese Simplified (简体中文)</option>
+                <option value="jpn">🇯🇵 Japanese (日本語)</option>
+                <option value="kor">🇰🇷 Korean (한국어)</option>
+                <option value="fra">🇫🇷 French (Français)</option>
+                <option value="spa">🇪🇸 Spanish (Español)</option>
+                <option value="deu">🇩🇪 German (Deutsch)</option>
+                <option value="rus">🇷🇺 Russian (Русский)</option>
+                <option value="por">🇵🇹 Portuguese (Português)</option>
+              </select>
             </div>
           )}
 
