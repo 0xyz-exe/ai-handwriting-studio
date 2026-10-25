@@ -26,6 +26,7 @@ import {
   SampleTemplate,
   createProjectFromTemplate,
 } from '@/lib/templates';
+import { Eye, PenLine, Sliders } from 'lucide-react';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 export default function Home() {
@@ -46,6 +47,7 @@ export default function Home() {
   const [isImportOpen, setIsImportOpen] = useState(false);
   const [isExportOpen, setIsExportOpen] = useState(false);
   const [isTourOpen, setIsTourOpen] = useState(false);
+  const [mobileTab, setMobileTab] = useState<'editor' | 'preview' | 'settings'>('editor');
 
   // Load projects from storage on initial mount & check first visit tour
   useEffect(() => {
@@ -238,10 +240,14 @@ export default function Home() {
         isSaving={isSaving}
       />
 
-      {/* Main Workspace (3-pane layout) */}
-      <div className="flex-1 flex overflow-hidden">
+      {/* Main Workspace (Responsive 3-pane on desktop, Tab-switched on mobile/tablet) */}
+      <div className="flex-1 flex overflow-hidden relative min-h-0">
         {/* Left Pane: Multi-pen Text Editor */}
-        <div className="w-[380px] lg:w-[440px] shrink-0 h-full">
+        <div
+          className={`${
+            mobileTab === 'editor' ? 'flex' : 'hidden'
+          } lg:flex w-full lg:w-[380px] xl:w-[440px] shrink-0 h-full flex-col z-10`}
+        >
           <Editor
             content={activeProject.content}
             onChange={updateContent}
@@ -253,7 +259,11 @@ export default function Home() {
         </div>
 
         {/* Center Pane: Realistic Canvas Paper Preview */}
-        <div className="flex-1 h-full min-w-0">
+        <div
+          className={`${
+            mobileTab === 'preview' ? 'flex' : 'hidden'
+          } lg:flex flex-1 h-full min-w-0 flex-col z-10`}
+        >
           <PaperCanvas
             pages={layout.pages}
             paperConfig={activeProject.paperConfig}
@@ -265,7 +275,11 @@ export default function Home() {
         </div>
 
         {/* Right Pane: Settings & Handwriting Style Library */}
-        <div className="shrink-0 h-full">
+        <div
+          className={`${
+            mobileTab === 'settings' ? 'flex' : 'hidden'
+          } lg:flex w-full lg:w-80 shrink-0 h-full flex-col z-10`}
+        >
           <SettingsSidebar
             paperConfig={activeProject.paperConfig}
             onUpdatePaperConfig={updatePaperConfig}
@@ -275,6 +289,44 @@ export default function Home() {
             onUpdateStudentMeta={updateStudentMeta}
           />
         </div>
+      </div>
+
+      {/* Mobile / Tablet Bottom Navigation Bar */}
+      <div className="lg:hidden h-14 bg-white border-t border-slate-200 px-2 flex items-center justify-around z-30 select-none shrink-0 shadow-lg">
+        <button
+          onClick={() => setMobileTab('editor')}
+          className={`flex-1 py-1 flex flex-col items-center justify-center space-y-0.5 rounded-lg transition-colors ${
+            mobileTab === 'editor' ? 'text-indigo-600 font-bold' : 'text-slate-500 hover:text-slate-900'
+          }`}
+        >
+          <PenLine className="w-4 h-4" />
+          <span className="text-[10px]">Editor Teks</span>
+        </button>
+
+        <button
+          onClick={() => setMobileTab('preview')}
+          className={`flex-1 py-1 flex flex-col items-center justify-center space-y-0.5 rounded-lg transition-colors relative ${
+            mobileTab === 'preview' ? 'text-indigo-600 font-bold' : 'text-slate-500 hover:text-slate-900'
+          }`}
+        >
+          <div className="relative">
+            <Eye className="w-4 h-4" />
+            <span className="absolute -top-1.5 -right-3 bg-indigo-600 text-white text-[9px] font-bold px-1.5 py-0.2 rounded-full">
+              {layout.totalPages}
+            </span>
+          </div>
+          <span className="text-[10px]">Preview Kanvas</span>
+        </button>
+
+        <button
+          onClick={() => setMobileTab('settings')}
+          className={`flex-1 py-1 flex flex-col items-center justify-center space-y-0.5 rounded-lg transition-colors ${
+            mobileTab === 'settings' ? 'text-indigo-600 font-bold' : 'text-slate-500 hover:text-slate-900'
+          }`}
+        >
+          <Sliders className="w-4 h-4" />
+          <span className="text-[10px]">Pengaturan</span>
+        </button>
       </div>
 
       {/* Modals */}

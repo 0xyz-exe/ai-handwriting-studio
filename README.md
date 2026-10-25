@@ -122,7 +122,20 @@ Berikut adalah tangkapan layar bagian-bagian utama studio beserta panduan cara m
 
 ---
 
-### 8. Contoh Hasil Akhir Tulisan Tangan Digital
+### 8. Desain Responsif di Semua Perangkat (Mobile, Tablet, & Desktop)
+<p align="center">
+  <img src="docs/screenshots/08-mobile-responsive.png" width="45%" alt="Tampilan Mobile Editor" />
+  &nbsp;&nbsp;
+  <img src="docs/screenshots/09-mobile-preview.png" width="45%" alt="Tampilan Mobile Preview Kanvas" />
+</p>
+
+*Aplikasi otomatis menyesuaikan ukuran layar:*
+- **Smartphone & Tablet**: Menggunakan **Bottom Navigation Bar** yang praktis untuk berpindah cepat antara **Editor Teks**, **Preview Kanvas**, dan **Pengaturan**. Zoom kanvas otomatis disesuaikan agar pas di layar ponsel tanpa terpotong.
+- **Laptop & Desktop**: Menggunakan tata letak profesional **3-Pane Workspace** berdampingan secara simultan.
+
+---
+
+### 9. Contoh Hasil Akhir Tulisan Tangan Digital
 ![Contoh Hasil Tulisan Tangan](docs/screenshots/preview-catatan-biologi.png)
 
 ---

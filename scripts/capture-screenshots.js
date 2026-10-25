@@ -106,6 +106,24 @@ async function capture() {
     await page.screenshot({ path: path.join(OUTPUT_DIR, '07-two-page-spread.png') });
   }
 
+  // 8. Mobile Viewport Responsive (iPhone 375x667)
+  console.log('Capturing 08-mobile-responsive.png...');
+  await page.setViewport({ width: 375, height: 667, deviceScaleFactor: 2 });
+  await page.goto('http://localhost:3000', { waitUntil: 'networkidle0' });
+  const mobileClose = await page.$('button[title*="Tutup"], button[title*="Lewati"]');
+  if (mobileClose) await mobileClose.click();
+  await new Promise((r) => setTimeout(r, 800));
+  await page.screenshot({ path: path.join(OUTPUT_DIR, '08-mobile-responsive.png') });
+
+  // 9. Mobile Preview Tab
+  console.log('Capturing 09-mobile-preview.png...');
+  const mobilePreviewTab = await page.$('div.lg\\:hidden button:nth-child(2)');
+  if (mobilePreviewTab) {
+    await mobilePreviewTab.click();
+    await new Promise((r) => setTimeout(r, 800));
+    await page.screenshot({ path: path.join(OUTPUT_DIR, '09-mobile-preview.png') });
+  }
+
   await browser.close();
   console.log('Screenshots capture complete!');
 }

@@ -74,10 +74,10 @@ export const Editor: React.FC<EditorProps> = ({
   const wordCount = content.trim() ? content.trim().split(/\s+/).length : 0;
 
   return (
-    <div className="flex flex-col h-full bg-white border-r border-slate-200">
+    <div className="flex flex-col h-full bg-white lg:border-r border-slate-200">
       {/* Multi-Pen Selection Bar */}
-      <div className="p-2.5 bg-slate-50 border-b border-slate-200 flex flex-wrap items-center gap-1.5 text-xs">
-        <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider mr-1">
+      <div className="p-2 sm:p-2.5 bg-slate-50 border-b border-slate-200 flex items-center gap-1.5 text-xs overflow-x-auto whitespace-nowrap scrollbar-none">
+        <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider shrink-0 mr-1">
           Alat Tulis:
         </span>
 

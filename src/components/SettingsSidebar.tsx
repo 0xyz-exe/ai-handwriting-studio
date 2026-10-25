@@ -76,7 +76,7 @@ export const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
   };
 
   return (
-    <aside className="w-80 bg-white border-l border-slate-200 flex flex-col h-full select-none">
+    <aside className="w-full lg:w-80 bg-white lg:border-l border-slate-200 flex flex-col h-full select-none">
       {/* Tabs Header */}
       <div className="flex border-b border-slate-200 text-xs font-semibold text-slate-600 bg-slate-50">
         <button

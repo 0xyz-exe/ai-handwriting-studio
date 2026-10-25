@@ -79,6 +79,25 @@ export const PaperCanvas: React.FC<PaperCanvasProps> = ({
   const [viewMode, setViewMode] = useState<ViewMode>('single');
   const [zoom, setZoom] = useState(0.85); // 85% scale fits comfortably on desktop
 
+  // Auto-fit zoom based on screen width (mobile / tablet / desktop)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const adaptZoom = () => {
+        const w = window.innerWidth;
+        if (w < 640) {
+          // Mobile phone
+          setZoom(Math.max(0.35, Math.min(0.48, (w - 24) / 798)));
+        } else if (w < 1024) {
+          // Tablet
+          setZoom(0.65);
+        }
+      };
+      adaptZoom();
+      window.addEventListener('resize', adaptZoom);
+      return () => window.removeEventListener('resize', adaptZoom);
+    }
+  }, []);
+
   // Free Pan & Drag cursor state
   const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
@@ -134,7 +153,7 @@ export const PaperCanvas: React.FC<PaperCanvasProps> = ({
   return (
     <div className="flex-1 flex flex-col h-full bg-slate-100 overflow-hidden relative">
       {/* Top Preview Controls Bar */}
-      <div className="h-11 bg-white/90 backdrop-blur-xs border-b border-slate-200 px-4 flex items-center justify-between z-10 select-none">
+      <div className="h-11 bg-white/95 backdrop-blur-xs border-b border-slate-200 px-3 sm:px-4 flex items-center justify-between z-10 select-none overflow-x-auto whitespace-nowrap scrollbar-none gap-2">
         {/* View Mode Switcher */}
         <div className="flex items-center space-x-1 bg-slate-100 p-0.5 rounded-lg text-xs font-medium text-slate-600">
           <button
