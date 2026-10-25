@@ -1,95 +1,143 @@
 # AI Handwriting Studio ✍️
 
 > **Studio Tulisan Tangan Digital Interaktif untuk Pelajar, Mahasiswa, Guru, dan Dosen.**  
-> Mengubah teks, catatan, jawaban soal, rangkuman, dan materi pembelajaran menjadi simulasi tulisan tangan digital yang realistis pada berbagai jenis buku tulis bergaris, folio, loose leaf binder, kotak matematika, dan lembar ujian resmi.
+> Mengubah teks, catatan pelajaran, tugas kuliah, rangkuman, dan jawaban soal menjadi simulasi tulisan tangan digital yang realistis pada berbagai jenis buku tulis bergaris, folio, loose leaf binder, kotak matematika, dan lembar ujian resmi.
 
 ---
 
-## 📸 Tampilan Aplikasi & Preview Hasil
+## 📸 Bagian-Bagian Penting Aplikasi & Contoh Tata Cara Penggunaan
 
-![Preview Catatan Tulisan Tangan Digital](docs/screenshots/preview-catatan-biologi.png)
-*Contoh hasil catatan Biologi Sel dengan kombinasi Bolpoin Biru (Judul), Bolpoin Hitam (Isi Catatan), Bolpoin Merah (Kata Kunci), Stabilo Kuning, dan Pensil 2B pada kertas bergaris rapi.*
+Berikut adalah tangkapan layar bagian-bagian utama studio beserta panduan cara menggunakannya dengan benar:
+
+### 1. Tampilan Workspace Studio Utama (3-Pane Workspace)
+![Tampilan Workspace Utama](docs/screenshots/01-workspace-overview.png)
+- **Panel Kiri (Editor)**: Tempat mengetik atau menempel materi catatan, mengatur alat tulis, dan memasukkan rumus matematika.
+- **Panel Tengah (Kanvas Kertas)**: Preview tulisan tangan secara *real-time*. Dilengkapi kontrol zoom dan kursor geser bebas (*drag-to-pan*).
+- **Panel Kanan (Sidebar Pengaturan)**: Pilihan gaya font tulisan tangan, ukuran huruf, kemiringan, jenis kertas, serta identitas siswa.
 
 ---
 
-## 🚀 Panduan & Tata Cara Penggunaan
+### 2. Editor Teks & Toolbar Multi-Alat Tulis
+![Toolbar Editor](docs/screenshots/02-editor-tools.png)
 
-Aplikasi ini dirancang sebagai studio catatan tulisan tangan digital yang fleksibel. Berikut langkah-langkah penggunaannya:
+#### 📝 Cara Menggunakan:
+1. Ketik catatan atau tempel (*paste*) materi dari dokumen lain di area teks.
+2. **Memberi Warna & Efek Alat Tulis**:
+   - Blok teks yang ingin diubah, lalu klik tombol alat tulis di toolbar atas:
+     - 🔵 **Pena Biru (`[blue]...[/blue]`)**: Standar untuk Judul Bab atau Sub-judul.
+     - ⚫ **Pena Hitam (`[black]...[/black]`)**: Standar untuk seluruh isi materi catatan.
+     - 🔴 **Pena Merah (`[red]...[/red]`)**: Untuk istilah penting, kata kunci, rumus, atau koreksi guru.
+     - 🟢 **Pena Hijau (`[green]...[/green]`)**: Untuk sub-poin atau klasifikasi materi.
+     - ✏️ **Pensil 2B (`[pencil]...[/pencil]`)**: Untuk catatan kecil/sketsa dengan efek grafit realistis.
+     - 🖊️ **Pensil Mekanik 0.5mm (`[pencil-mech]...[/pencil-mech]`)**: Goresan sangat tipis, tajam, dan rapi.
+     - 🖍️ **Pensil 4B Gelap (`[pencil-4b]...[/pencil-4b]`)**: Goresan empuk, tebal, dan berbutir.
+     - 🖍️ **Pensil Warna Merah / Biru (`[pencil-red]` / `[pencil-blue]`)**: Untuk diagram & grafik.
+     - 🟡 **Stabilo Kuning (`[hl]...[/hl]`)**: Menandai kalimat penting yang wajib dihafal.
+3. **Format Khusus**:
+   - Judul Bab: Ketik `# ` di awal baris.
+   - Sub-judul: Ketik `### ` di awal baris.
+   - Rumus Matematika: Masukkan di antara tanda dolar, contoh: `$x = \frac{-b \pm \sqrt{b^2-4ac}}{2a}$`.
+   - Pemisah Halaman: Masukkan tanda `---` untuk berpindah ke halaman kertas berikutnya.
 
-### 1. Memasukkan Materi & Memilih Alat Tulis
-- Tulis langsung materi catatan pada panel **Editor** di sebelah kiri, atau tempel (*paste*) teks dari dokumen lain.
-- **Kombinasi Multi-Pena & Pensil**:
-  - Blok kata/kalimat yang ingin diubah gayanya, lalu klik tombol alat tulis di atas editor:
-    - **Pena Biru (`[blue]`)**: Standar untuk Judul Bab atau Sub-judul.
-    - **Pena Hitam (`[black]`)**: Standar untuk isi materi catatan umum.
-    - **Pena Merah (`[red]`)**: Untuk istilah penting, kata kunci, rumus, atau poin koreksi.
-    - **Pena Hijau (`[green]`)**: Untuk klasifikasi atau sub-bab.
-    - **Pensil 2B (`[pencil]`)**: Untuk catatan ringan atau sketsa dengan tekstur grafit realistis.
-    - **Pensil Mekanik 0.5mm (`[pencil-mech]`)**: Goresan tipis, tajam, dan presisi tinggi.
-    - **Pensil 4B Gelap (`[pencil-4b]`)**: Goresan tebal dan empuk bertekstur.
-    - **Pensil Warna Merah / Biru (`[pencil-red]` / `[pencil-blue]`)**: Untuk sketsa diagram & grafik.
-    - **Stabilo Kuning (`[hl]`)**: Menandai baris/kalimat penting yang wajib dihafal.
-  - **Rumus Matematika**: Masukkan rumus dengan sintaks KaTeX `$x = \frac{-b \pm \sqrt{b^2-4ac}}{2a}$`.
-  - **Bagi Halaman Manual**: Masukkan pemisah baris `---` untuk memulai halaman baru.
+---
 
-### 2. Navigasi Kanvas & Kursor Geser Bebas (*Free Drag-to-Pan*)
-- **Mode Tampilan**:
-  - `1 Halaman`: Tampilan fokus per halaman tunggal.
-  - `2 Halaman (Buku)`: Simulasi buku catatan terbuka berdampingan lengkap dengan efek bayangan lipatan tengah (*spine shadow*).
-  - `Semua`: Tampilan vertikal seluruh lembar halaman.
-- **Geser Bebas (Free Hand Pan)**:
-  - Tekan dan tahan tombol mouse (kiri) di area kanvas, lalu geser (*drag*) ke segala arah secara bebas untuk memposisikan kertas.
-  - Gunakan kontrol zoom (`+` dan `-`) untuk mengatur pembesaran dari 35% hingga 180%.
-  - Klik tombol **Reset Posisi & Zoom** (`RotateCcw`) untuk mengembalikan posisi kanvas ke tengah layar.
+### 3. Quick Paper Bar & Kustomisasi Garis Kertas
+![Pilihan Kertas](docs/screenshots/03-paper-preview.png)
 
-### 3. Memilih Jenis Kertas & Kustomisasi Garis Buku
-Pilih kertas langsung melalui **Quick Paper Bar** di atas kanvas atau melalui tab **Kertas & Ukuran** di sidebar kanan:
-1. **Buku Tulis SIDU (Sekolah)**: Garis biru beraturan dengan garis margin merah kiri.
-2. **Kertas Double Folio Bergaris**: Standar tugas sekolah & kuliah (margin kiri ganda & garis tepi kanan).
-3. **Kertas Loose Leaf Binder Kampus**: Dilengkapi 26 lubang ring binder khas mahasiswa.
-4. **Buku Kotak Matematika (5mm)**: Grid kotak presisi untuk perhitungan sains dan rumus.
-5. **Buku Kotak Besar (10mm)**: Grid kotak besar untuk anak SD, angka, dan aksara/hanzi.
-6. **Buku Garis 3 Tulis Halus**: Garis bantu tengah putus-putus untuk huruf tegak bersambung.
-7. **Lembar Ujian Resmi (UTS/UAS)**: Tabel formal identitas siswa, mapel, tanggal, dan kotak nilai.
-8. **Kertas Milimeter Blok**: Kertas grafik oranye mikro untuk praktikum teknik & fisika.
-9. **Kertas Not Balok Musik**: 5 garis paranada (*stave lines*) seni budaya.
-10. **Kertas Polos Ivory HVS**: Kertas bersih tanpa garis untuk catatan bebas & diagram.
+#### 📐 Cara Menggunakan:
+1. **Ganti Kertas Cepat**: Klik tombol kertas pada bar horizontal di atas kanvas:
+   - **Buku SIDU**: Garis biru sekolah dengan garis tepi merah kiri.
+   - **Double Folio**: Format standar tugas sekolah & kuliah (garis tepi ganda merah di kiri dan tepi kanan).
+   - **Loose Leaf**: Kertas binder kampus bergaris lengkap dengan 26 lubang ring binder.
+   - **Kotak Matematika**: Grid 5mm untuk perhitungan rumus dan angka.
+   - **Kotak Besar**: Grid 10mm untuk latihan anak SD & aksara/hanzi.
+   - **Garis 3 Halus**: Format belajar menulis halus & tegak bersambung.
+   - **Lembar Ujian**: Tabel formal Nama, Kelas, Mapel, Tanggal, dan Nilai.
+   - **Milimeter Blok**: Kertas grafik oranye presisi untuk gambar teknik & fisika.
+   - **Not Balok**: Garis paranada (*stave lines*) untuk catatan musik.
+   - **Polos Ivory**: Kertas bersih tanpa garis untuk catatan bebas.
+2. **Menyembunyikan / Menampilkan Garis**:
+   - Jika garis mengganggu, klik tombol **`Garis: Mati`** pada toolbar atas untuk menghilangkan garis buku secara instan.
+3. **Mengatur Warna & Kepekatan Garis**:
+   - Buka tab **Kertas & Ukuran** di sidebar kanan.
+   - Pilih warna garis (Biru SIDU, Abu-abu Minimalis Kokuyo, Cokelat Sepia Moleskine, Hijau Sains, dll).
+   - Atur slider **Kepekatan Garis (Opasitas)** dari 10% (sangat samar) agar tidak mengganggu tulisan tangan.
 
-- **Kustomisasi Garis**:
-  - Matikan garis melalui tombol **`Garis: Mati`** di toolbar jika menginginkan kertas bersih tanpa garis yang mengganggu.
-  - Jika garis dinyalakan, pilih dari **8 variasi warna garis** (Biru SIDU, Abu Minimalis Kokuyo, Cokelat Sepia Moleskine, Hijau Sains, Oranye Milimeter, Lavender, Arang Hitam, Koral Merah).
-  - Atur slider **Kepekatan Garis (Opasitas)** dari 10% (sangat samar) hingga 100% (tegas).
+---
 
-### 4. Bantuan AI Catatan Studio & OCR Dokumen
-- Klik tombol **AI Catatan** pada navbar:
-  - *Rapikan Struktur Catatan*: Mengubah teks mentah menjadi outline terstruktur dengan judul dan poin-poin rapi.
-  - *Perbaiki Ejaan (PUEBI)*: Memperbaiki kesalahan ketik, tanda baca, huruf kapital, dan partikel bahasa Indonesia.
-  - *Buat Rangkuman Inti*: Meringkas materi panjang menjadi poin-poin catatan penting.
-  - *Format Soal & Jawaban*: Menyusun daftar soal latihan dan langkah pembahasannya.
-  - *Parafrase Gaya Siswa*: Menulis ulang teks dengan bahasa catatan siswa yang natural.
-  - Dilengkapi perbandingan *Diff View* (Teks Asli vs Hasil AI) sebelum diterapkan ke editor.
-- Klik tombol **Import / OCR**:
-  - Ekstrak dokumen Word (`.docx`) atau teks polos (`.txt`).
-  - OCR foto lembar soal atau papan tulis dengan **Tesseract.js** (mendukung Bahasa Indonesia dan English) dengan progress bar real-time.
+### 4. Mode Tampilan 2 Halaman (Buku Terbuka) & Kursor Geser Bebas
+![Mode 2 Halaman Buku](docs/screenshots/07-two-page-spread.png)
 
-### 5. Ekspor Dokumen & Siap Cetak
-- Klik tombol **Ekspor PDF** di kanan atas:
-  - **Unduh PDF**: Menghasilkan dokumen PDF multi-halaman sesuai ukuran fisik kertas yang dipilih (A4, A5, Folio F4, Letter, B5).
-  - **Unduh Gambar PNG**: Menyimpan setiap halaman menjadi gambar berkualitas tinggi (300 DPI equivalent).
-  - **Mode Cetak Langsung (Print Mode)**: Membuka dialog print browser untuk langsung mencetak ke kertas fisik.
+#### 🖐️ Cara Menggunakan:
+1. **Mode 2 Halaman**: Klik tombol **`2 Halaman (Buku)`** di bar atas untuk melihat catatan seperti buku tulis terbuka berdampingan lengkap dengan efek bayangan lipatan tengah (*spine shadow*).
+2. **Kursor Geser Bebas (*Drag-to-Pan*)**:
+   - Klik dan tahan mouse di mana saja pada area kanvas, lalu geser (*drag*) untuk memindahkan kertas secara leluasa ke posisi yang nyaman.
+3. **Zoom & Reset**:
+   - Gunakan tombol `+` dan `-` untuk memperbesar atau memperkecil.
+   - Klik tombol **Reset Posisi & Zoom** (`RotateCcw`) untuk mengembalikan kertas ke tengah dengan zoom 85%.
+
+---
+
+### 5. Panduan Cepat Interaktif (Quick Guided Tour)
+![Quick Tour](docs/screenshots/04-quick-tour.png)
+
+#### 💡 Cara Menggunakan:
+- Pengguna baru akan disambut oleh panduan cepat 5 langkah ini secara otomatis saat pertama kali membuka aplikasi.
+- Untuk membukanya kembali kapan saja, klik tombol **`Panduan`** (`HelpCircle`) di navbar atas.
+- Gunakan tombol panah keyboard (`←` dan `→`) atau tombol *Lanjut* untuk menelusuri fitur utama.
+
+---
+
+### 6. Asisten AI Catatan Studio & Import Dokumen / OCR
+![Asisten AI](docs/screenshots/05-ai-assistant.png)
+
+#### 🤖 Cara Menggunakan AI Catatan:
+1. Klik tombol **`AI Catatan`** berikon bintang ungu di navbar atas.
+2. Pilih tindakan otomatis yang diinginkan:
+   - 🧹 **Rapikan Struktur Catatan**: Mengubah teks acak menjadi susunan bab dan poin rapi.
+   - ✍️ **Perbaiki Ejaan (PUEBI)**: Membetulkan typo, huruf kapital, dan tanda baca otomatis.
+   - 📌 **Buat Rangkuman Inti**: Meringkas materi panjang menjadi poin-poin hafalan.
+   - 📝 **Format Soal & Pembahasan**: Menyusun soal latihan lengkap dengan langkah jawaban.
+   - 🎓 **Parafrase Gaya Siswa**: Menuliskan kembali kalimat dengan gaya bahasa catatan santai.
+3. Bandingkan hasil pada panel *Teks Asli* vs *Hasil AI*, lalu klik **Gunakan Hasil Ini di Editor**.
+4. *Catatan*: Fitur AI memiliki sistem pemrosesan lokal cerdas (*heuristic offline fallback*) sehingga tetap berfungsi lancar tanpa memerlukan API key eksternal.
+
+#### 📷 Cara Menggunakan Import Dokumen / OCR:
+1. Klik tombol **`Import / OCR`** di navbar atas.
+2. Pilih tab **Dokumen** untuk mengunggah file `.docx` (Microsoft Word) atau file teks `.txt`.
+3. Pilih tab **OCR Gambar** untuk mengunggah foto soal dari lembar tugas atau foto papan tulis. Tesseract OCR akan mengekstrak tulisan menjadi teks otomatis.
+
+---
+
+### 7. Dialog Ekspor Dokumen & Siap Cetak
+![Modal Ekspor PDF](docs/screenshots/06-export-modal.png)
+
+#### 🖨️ Cara Mengunduh & Mencetak:
+1. Klik tombol biru **`Ekspor PDF`** di pojok kanan atas.
+2. Sesuaikan nama file dokumen yang diinginkan.
+3. Pilih format output:
+   - **Unduh Dokumen PDF**: Menghasilkan file PDF resmi multi-halaman sesuai ukuran fisik kertas asli (A4, A5, Folio/F4, Letter, B5) siap dikumpulkan ke guru atau dosen.
+   - **Unduh Gambar PNG Resolusi Tinggi**: Mengekspor setiap halaman menjadi gambar tajam (300 DPI equivalent) untuk dibagikan via WhatsApp atau Google Classroom.
+   - **Mode Cetak Langsung (Print Mode)**: Membuka jendela print printer komputer Anda.
+
+---
+
+### 8. Contoh Hasil Akhir Tulisan Tangan Digital
+![Contoh Hasil Tulisan Tangan](docs/screenshots/preview-catatan-biologi.png)
 
 ---
 
 ## 🛠️ Arsitektur & Teknologi
 
-- **Frontend**: Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS, Lucide Icons.
-- **Rendering Engine**: HTML5 Canvas rendering dengan simulasi goresan tinta, variasi sudut kemiringan (*slant*), variasi garis dasar (*baseline jitter*), variasi ukuran karakter, dan tekstur grafit pensil.
-- **Handwriting Fonts**: 9 webfont tulisan tangan (Caveat, Kalam, Patrick Hand, Indie Flower, Shadows Into Light, Architects Daughter, Homemade Apple, Marck Script, Reenie Beanie).
-- **OCR Engine**: Tesseract.js (Client-side worker dengan dukungan bahasa Indonesia & Inggris).
-- **Document Parser**: Mammoth.js untuk ekstraksi dokumen DOCX.
+- **Frontend Framework**: Next.js 16 (App Router), React 19, TypeScript.
+- **Styling**: Tailwind CSS dengan tema adaptif untuk kertas dan tinta bolpoin.
+- **Rendering Engine**: HTML5 Canvas rendering dengan PRNG Mulberry32 deterministik, mensimulasikan goresan tinta, variasi kemiringan (*slant*), variasi garis dasar (*baseline jitter*), variasi ukuran karakter, dan tekstur grafit pensil.
+- **Handwriting Fonts**: 9 webfont pilihan dari Google Fonts (Caveat, Kalam, Patrick Hand, Indie Flower, Shadows Into Light, Architects Daughter, Homemade Apple, Marck Script, Reenie Beanie).
+- **OCR Engine**: Tesseract.js (Client-side Web Worker, mendukung Bahasa Indonesia & English).
+- **Document Parser**: Mammoth.js (ekstraksi file docx).
 - **Math Engine**: KaTeX untuk pemrosesan notasi matematika.
-- **PDF Engine**: jsPDF dengan penyesuaian dimensi milimeter fisik kertas asli.
-- **Penyimpanan**: LocalStorage dengan sistem auto-save debounced.
+- **PDF Engine**: jsPDF dengan pemetaan dimensi milimeter presisi ukuran kertas internasional dan nasional (F4).
+- **Penyimpanan**: LocalStorage dengan debounced auto-save.
 
 ---
 
@@ -137,5 +185,5 @@ Aplikasi akan aktif di `http://localhost:3000`.
 
 ## 📄 Lisensi
 
-Proyek ini dirilis di bawah lisensi open-source [ISC](LICENSE).
-Aset font menggunakan font open-source dari Google Fonts yang memiliki lisensi SIL Open Font License (OFL).
+Proyek ini dirilis di bawah lisensi open-source [ISC](LICENSE).  
+Aset font menggunakan font open-source dari Google Fonts dengan lisensi SIL Open Font License (OFL).
