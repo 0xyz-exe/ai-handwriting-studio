@@ -10,10 +10,12 @@ import {
   FileSpreadsheet,
   FileText,
   Grid,
+  Hand,
   Layers,
   Maximize2,
   Music,
   PenTool,
+  RotateCcw,
   ZoomIn,
   ZoomOut,
 } from 'lucide-react';
@@ -28,30 +30,29 @@ const SingleCanvasView: React.FC<{
   onCanvasMounted?: (canvas: HTMLCanvasElement) => void;
 }> = ({ page, paperConfig, handwritingConfig, studentMeta, onCanvasMounted }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const onMountRef = useRef(onCanvasMounted);
+  onMountRef.current = onCanvasMounted;
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const paint = () => {
-      renderPageToCanvas(canvas, page, paperConfig, handwritingConfig, studentMeta);
-      onCanvasMounted?.(canvas);
-    };
-
-    // First paint
-    paint();
+    renderPageToCanvas(canvas, page, paperConfig, handwritingConfig, studentMeta);
+    onMountRef.current?.(canvas);
 
     // Re-paint when Google Fonts load to ensure cursive handwriting is crisp
     if (typeof document !== 'undefined' && document.fonts) {
       document.fonts.ready.then(() => {
-        paint();
+        if (canvasRef.current) {
+          renderPageToCanvas(canvasRef.current, page, paperConfig, handwritingConfig, studentMeta);
+        }
       });
     }
-  }, [page, paperConfig, handwritingConfig, studentMeta, onCanvasMounted]);
+  }, [page, paperConfig, handwritingConfig, studentMeta]);
 
   return (
-    <div className="bg-white rounded-sm shadow-2xl overflow-hidden border border-slate-300">
-      <canvas ref={canvasRef} className="block" />
+    <div className="bg-white rounded-sm shadow-2xl overflow-hidden border border-slate-300 pointer-events-none select-none">
+      <canvas ref={canvasRef} className="block pointer-events-none" />
     </div>
   );
 };
@@ -77,6 +78,11 @@ export const PaperCanvas: React.FC<PaperCanvasProps> = ({
   const [viewMode, setViewMode] = useState<ViewMode>('single');
   const [zoom, setZoom] = useState(0.85); // 85% scale fits comfortably on desktop
 
+  // Free Pan & Drag cursor state
+  const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const dragStartRef = useRef({ x: 0, y: 0 });
+
   const canvasMapRef = useRef<Map<number, HTMLCanvasElement>>(new Map());
 
   const registerCanvas = (pageIndex: number, canvas: HTMLCanvasElement) => {
@@ -87,6 +93,33 @@ export const PaperCanvas: React.FC<PaperCanvasProps> = ({
       if (c) list.push(c);
     }
     onRegisterCanvases(list);
+  };
+
+  // Mouse drag handlers for free cursor movement
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (e.button !== 0) return; // Left mouse click only
+    setIsDragging(true);
+    dragStartRef.current = {
+      x: e.clientX - panOffset.x,
+      y: e.clientY - panOffset.y,
+    };
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging) return;
+    setPanOffset({
+      x: e.clientX - dragStartRef.current.x,
+      y: e.clientY - dragStartRef.current.y,
+    });
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const handleResetView = () => {
+    setZoom(0.85);
+    setPanOffset({ x: 0, y: 0 });
   };
 
   const handlePrevPage = () => {
@@ -162,30 +195,40 @@ export const PaperCanvas: React.FC<PaperCanvasProps> = ({
           </div>
         )}
 
-        {/* Zoom Controls */}
-        <div className="flex items-center space-x-1.5 text-xs font-medium text-slate-600">
-          <button
-            onClick={() => setZoom((prev) => Math.max(0.4, prev - 0.1))}
-            className="p-1 hover:bg-slate-100 rounded"
-            title="Perkecil"
+        {/* Drag Pan Indicator & Zoom Controls */}
+        <div className="flex items-center space-x-2 text-xs font-medium text-slate-600">
+          <div
+            className="hidden lg:flex items-center space-x-1 text-[11px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200"
+            title="Tekan & geser mouse untuk menggeser posisi kertas"
           >
-            <ZoomOut className="w-3.5 h-3.5" />
-          </button>
-          <span className="w-10 text-center font-mono">{Math.round(zoom * 100)}%</span>
-          <button
-            onClick={() => setZoom((prev) => Math.min(1.5, prev + 0.1))}
-            className="p-1 hover:bg-slate-100 rounded"
-            title="Perbesar"
-          >
-            <ZoomIn className="w-3.5 h-3.5" />
-          </button>
-          <button
-            onClick={() => setZoom(0.85)}
-            className="p-1 hover:bg-slate-100 rounded ml-1"
-            title="Reset Zoom"
-          >
-            <Maximize2 className="w-3.5 h-3.5" />
-          </button>
+            <Hand className="w-3 h-3 text-indigo-600" />
+            <span>Geser Bebas Aktif</span>
+          </div>
+
+          <div className="flex items-center space-x-1">
+            <button
+              onClick={() => setZoom((prev) => Math.max(0.35, prev - 0.1))}
+              className="p-1 hover:bg-slate-100 rounded"
+              title="Perkecil"
+            >
+              <ZoomOut className="w-3.5 h-3.5" />
+            </button>
+            <span className="w-10 text-center font-mono font-semibold">{Math.round(zoom * 100)}%</span>
+            <button
+              onClick={() => setZoom((prev) => Math.min(1.8, prev + 0.1))}
+              className="p-1 hover:bg-slate-100 rounded"
+              title="Perbesar"
+            >
+              <ZoomIn className="w-3.5 h-3.5" />
+            </button>
+            <button
+              onClick={handleResetView}
+              className="p-1 hover:bg-slate-100 rounded ml-1 text-slate-600 flex items-center space-x-1"
+              title="Reset Posisi & Zoom"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+            </button>
+          </div>
         </div>
       </div>
 
@@ -223,96 +266,104 @@ export const PaperCanvas: React.FC<PaperCanvasProps> = ({
         ))}
       </div>
 
-      {/* Canvas Viewport */}
-      <div className="flex-1 overflow-auto p-8 flex items-center justify-center">
-        {viewMode === 'single' && (
-          <div
-            className="transition-transform duration-150 origin-center"
-            style={{ transform: `scale(${zoom})` }}
-          >
-            {pages.map((page, idx) => (
-              <div
-                key={`single-${page.pageNumber}`}
-                className={idx === currentPage ? 'block' : 'hidden'}
-              >
-                <SingleCanvasView
-                  page={page}
-                  paperConfig={paperConfig}
-                  handwritingConfig={handwritingConfig}
-                  studentMeta={studentMeta}
-                  onCanvasMounted={(c) => registerCanvas(idx, c)}
-                />
-              </div>
-            ))}
-          </div>
-        )}
+      {/* Interactive Free-Drag Pan Viewport */}
+      <div
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
+        className={`flex-1 overflow-hidden p-8 flex items-center justify-center select-none ${
+          isDragging ? 'cursor-grabbing' : 'cursor-grab'
+        }`}
+      >
+        <div
+          style={{
+            transform: `translate3d(${panOffset.x}px, ${panOffset.y}px, 0) scale(${zoom})`,
+            transition: isDragging ? 'none' : 'transform 120ms ease-out',
+            transformOrigin: 'center center',
+          }}
+          className="will-change-transform"
+        >
+          {viewMode === 'single' && (
+            <div>
+              {pages.map((page, idx) => (
+                <div
+                  key={`single-${page.pageNumber}`}
+                  className={idx === currentPage ? 'block' : 'hidden'}
+                >
+                  <SingleCanvasView
+                    page={page}
+                    paperConfig={paperConfig}
+                    handwritingConfig={handwritingConfig}
+                    studentMeta={studentMeta}
+                    onCanvasMounted={(c) => registerCanvas(idx, c)}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
 
-        {viewMode === 'double' && (
-          <div
-            className="transition-transform duration-150 origin-center flex items-center shadow-2xl rounded-lg overflow-hidden border border-slate-300 bg-white"
-            style={{ transform: `scale(${zoom})` }}
-          >
-            {/* Left Page */}
-            {pages[currentPage] && (
-              <div className="relative border-r border-slate-300">
-                <SingleCanvasView
-                  page={pages[currentPage]}
-                  paperConfig={paperConfig}
-                  handwritingConfig={handwritingConfig}
-                  studentMeta={studentMeta}
-                  onCanvasMounted={(c) => registerCanvas(currentPage, c)}
-                />
-                {/* Notebook Center Spine Shadow */}
-                <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-black/15 to-transparent pointer-events-none" />
-              </div>
-            )}
+          {viewMode === 'double' && (
+            <div className="flex items-center shadow-2xl rounded-lg overflow-hidden border border-slate-300 bg-white">
+              {/* Left Page */}
+              {pages[currentPage] && (
+                <div className="relative border-r border-slate-300">
+                  <SingleCanvasView
+                    page={pages[currentPage]}
+                    paperConfig={paperConfig}
+                    handwritingConfig={handwritingConfig}
+                    studentMeta={studentMeta}
+                    onCanvasMounted={(c) => registerCanvas(currentPage, c)}
+                  />
+                  {/* Notebook Center Spine Shadow */}
+                  <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-black/20 to-transparent pointer-events-none" />
+                </div>
+              )}
 
-            {/* Right Page */}
-            {pages[currentPage + 1] ? (
-              <div className="relative">
-                <SingleCanvasView
-                  page={pages[currentPage + 1]}
-                  paperConfig={paperConfig}
-                  handwritingConfig={handwritingConfig}
-                  studentMeta={studentMeta}
-                  onCanvasMounted={(c) => registerCanvas(currentPage + 1, c)}
-                />
-                {/* Notebook Center Spine Shadow */}
-                <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-black/15 to-transparent pointer-events-none" />
-              </div>
-            ) : (
-              // Empty right side if odd number of pages
-              <div
-                className="bg-slate-50 flex items-center justify-center text-slate-300 text-sm font-medium"
-                style={{
-                  width: pages[0]?.width || 798,
-                  height: pages[0]?.height || 1128,
-                }}
-              >
-                Halaman Kosong
-              </div>
-            )}
-          </div>
-        )}
+              {/* Right Page */}
+              {pages[currentPage + 1] ? (
+                <div className="relative">
+                  <SingleCanvasView
+                    page={pages[currentPage + 1]}
+                    paperConfig={paperConfig}
+                    handwritingConfig={handwritingConfig}
+                    studentMeta={studentMeta}
+                    onCanvasMounted={(c) => registerCanvas(currentPage + 1, c)}
+                  />
+                  {/* Notebook Center Spine Shadow */}
+                  <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-black/20 to-transparent pointer-events-none" />
+                </div>
+              ) : (
+                // Empty right side if odd number of pages
+                <div
+                  className="bg-slate-50 flex items-center justify-center text-slate-300 text-sm font-medium"
+                  style={{
+                    width: pages[0]?.width || 798,
+                    height: pages[0]?.height || 1128,
+                  }}
+                >
+                  Halaman Kosong
+                </div>
+              )}
+            </div>
+          )}
 
-        {viewMode === 'grid' && (
-          <div
-            className="flex flex-col space-y-12 transition-transform duration-150 origin-top items-center"
-            style={{ transform: `scale(${zoom})` }}
-          >
-            {pages.map((page, idx) => (
-              <div key={`grid-${page.pageNumber}`}>
-                <SingleCanvasView
-                  page={page}
-                  paperConfig={paperConfig}
-                  handwritingConfig={handwritingConfig}
-                  studentMeta={studentMeta}
-                  onCanvasMounted={(c) => registerCanvas(idx, c)}
-                />
-              </div>
-            ))}
-          </div>
-        )}
+          {viewMode === 'grid' && (
+            <div className="flex flex-col space-y-12 items-center">
+              {pages.map((page, idx) => (
+                <div key={`grid-${page.pageNumber}`}>
+                  <SingleCanvasView
+                    page={page}
+                    paperConfig={paperConfig}
+                    handwritingConfig={handwritingConfig}
+                    studentMeta={studentMeta}
+                    onCanvasMounted={(c) => registerCanvas(idx, c)}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

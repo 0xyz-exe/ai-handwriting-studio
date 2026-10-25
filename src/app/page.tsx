@@ -30,8 +30,13 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 export default function Home() {
   const [projects, setProjects] = useState<StudentProject[]>([]);
   const [activeProject, setActiveProject] = useState<StudentProject | null>(null);
-  const [activeCanvases, setActiveCanvases] = useState<HTMLCanvasElement[]>([]);
+  const activeCanvasesRef = useRef<HTMLCanvasElement[]>([]);
+  const [exportCanvases, setExportCanvases] = useState<HTMLCanvasElement[]>([]);
   const [isSaving, setIsSaving] = useState(false);
+
+  const handleRegisterCanvases = useCallback((canvases: HTMLCanvasElement[]) => {
+    activeCanvasesRef.current = canvases;
+  }, []);
 
   // Modals state
   const [isTemplatesOpen, setIsTemplatesOpen] = useState(false);
@@ -207,7 +212,10 @@ export default function Home() {
         onOpenTemplates={() => setIsTemplatesOpen(true)}
         onOpenImport={() => setIsImportOpen(true)}
         onOpenAi={() => setIsAiOpen(true)}
-        onOpenExport={() => setIsExportOpen(true)}
+        onOpenExport={() => {
+          setExportCanvases(activeCanvasesRef.current);
+          setIsExportOpen(true);
+        }}
         onOpenProjects={() => setIsProjectsOpen(true)}
         isSaving={isSaving}
       />
@@ -234,7 +242,7 @@ export default function Home() {
             onUpdatePaperConfig={updatePaperConfig}
             handwritingConfig={activeProject.handwritingConfig}
             studentMeta={activeProject.studentMeta}
-            onRegisterCanvases={setActiveCanvases}
+            onRegisterCanvases={handleRegisterCanvases}
           />
         </div>
 
@@ -270,7 +278,7 @@ export default function Home() {
       <ExportModal
         isOpen={isExportOpen}
         onClose={() => setIsExportOpen(false)}
-        canvases={activeCanvases}
+        canvases={exportCanvases}
         paperSize={activeProject.paperConfig.size}
         projectTitle={activeProject.title}
       />
